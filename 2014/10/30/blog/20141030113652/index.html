@@ -1,0 +1,857 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>DBCP连接池配置参数说明 | BaiFan</title>
+    <meta name="description" id="description" content="DBCP连接池配置参数说明 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="DBCP连接池配置参数说明。 bean id=”dataSource” cla…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DBCP连接池配置参数说明">
+<meta property="og:url" content="http://www.innereye.cn/2014/10/30/blog/20141030113652/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="DBCP连接池配置参数说明。 bean id=”dataSource” cla…">
+<meta property="og:updated_time" content="2016-08-29T02:41:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DBCP连接池配置参数说明">
+<meta name="twitter:description" content="DBCP连接池配置参数说明。 bean id=”dataSource” cla…">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/10/30/blog/20141030113652/" title="DBCP连接池配置参数说明" itemprop="url">DBCP连接池配置参数说明</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2014-10-30T03:36:52.000Z" itemprop="datePublished"> 发表于 2014-10-30</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p>DBCP连接池配置参数说明。 bean id=”dataSource” cla…<br><a id="more"></a><br>转自链接:<a href="http://blog.csdn.net/fairyhawk/article/details/7565391" target="_blank" rel="external">fairyhawk</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 数据源1 --&gt;</div><div class="line">&lt;bean id=&quot;dataSource&quot;</div><div class="line">      class=&quot;org.apache.commons.dbcp.BasicDataSource&quot;</div><div class="line">      destroy-method=&quot;close&quot;&gt;</div><div class="line">    &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;</div><div class="line">    &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://192.168.0.109:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&quot;/&gt;</div><div class="line">    &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;</div><div class="line">    &lt;property name=&quot;password&quot; value=&quot;root&quot;/&gt;</div><div class="line">    &lt;!--maxActive: 最大连接数量--&gt; </div><div class="line">    &lt;property name=&quot;maxActive&quot; value=&quot;150&quot;/&gt;</div><div class="line">    &lt;!--minIdle: 最小空闲连接--&gt; </div><div class="line">    &lt;property name=&quot;minIdle&quot; value=&quot;5&quot;/&gt;</div><div class="line">    &lt;!--maxIdle: 最大空闲连接--&gt; </div><div class="line">    &lt;property name=&quot;maxIdle&quot; value=&quot;20&quot;/&gt;</div><div class="line">    &lt;!--initialSize: 初始化连接--&gt; </div><div class="line">    &lt;property name=&quot;initialSize&quot; value=&quot;30&quot;/&gt;</div><div class="line">    &lt;!-- 连接被丢弃时是否打印 --&gt;</div><div class="line">    &lt;property name=&quot;logAbandoned&quot; value=&quot;true&quot;/&gt;</div><div class="line">    &lt;!--removeAbandoned: 是否自动回收超时连接--&gt; </div><div class="line">    &lt;property name=&quot;removeAbandoned&quot;  value=&quot;true&quot;/&gt;</div><div class="line">    &lt;!--removeAbandonedTimeout: 超时时间(以秒数为单位)--&gt; </div><div class="line">    &lt;property name=&quot;removeAbandonedTimeout&quot; value=&quot;10&quot;/&gt;</div><div class="line">    &lt;!--maxWait: 超时等待时间以毫秒为单位 1000等于1秒--&gt;</div><div class="line">    &lt;property name=&quot;maxWait&quot; value=&quot;1000&quot;/&gt;</div><div class="line">    &lt;!-- 在空闲连接回收器线程运行期间休眠的时间值,以毫秒为单位. --&gt;</div><div class="line">    &lt;property name=&quot;timeBetweenEvictionRunsMillis&quot; value=&quot;10000&quot;/&gt;</div><div class="line">    &lt;!--  在每次空闲连接回收器线程(如果有)运行时检查的连接数量 --&gt;</div><div class="line">    &lt;property name=&quot;numTestsPerEvictionRun&quot; value=&quot;10&quot;/&gt;</div><div class="line">    &lt;!-- 1000 * 60 * 30  连接在池中保持空闲而不被空闲连接回收器线程--&gt;</div><div class="line">    &lt;property name=&quot;minEvictableIdleTimeMillis&quot; value=&quot;10000&quot;/&gt;</div><div class="line">    &lt;property name=&quot;validationQuery&quot; value=&quot;SELECT 1&quot;/&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>dbcp配置中文版本，自apache 官方文档<br>原文请见<a href="http://commons.apache.org/dbcp/configuration.html。" target="_blank" rel="external">http://commons.apache.org/dbcp/configuration.html。</a></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>传递给JDBC驱动的用于建立连接的用户名</td>
+</tr>
+<tr>
+<td>password</td>
+<td>传递给JDBC驱动的用于建立连接的密码</td>
+</tr>
+<tr>
+<td>url</td>
+<td>传递给JDBC驱动的用于建立连接的URL</td>
+</tr>
+<tr>
+<td>driverClassName</td>
+<td>使用的JDBC驱动的完整有效的java 类名</td>
+</tr>
+<tr>
+<td>connectionProperties</td>
+<td>当建立新连接时被发送给JDBC驱动的连接参数</td>
+</tr>
+</tbody>
+</table>
+<p>格式必须是 <strong>[propertyName=property]</strong></p>
+<blockquote>
+<p>注意 ：参数user/password将被明确传递，所以不需要包括在这里。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>defaultAutoCommit</td>
+<td>true</td>
+<td>连接池创建的连接的默认的auto-commit状态</td>
+</tr>
+<tr>
+<td>defaultReadOnly</td>
+<td>driver default</td>
+<td>连接池创建的连接的默认的read-only状态.<br> 如果没有设置则setReadOnly方法将不会被调用. (某些驱动不支持只读模式,比如:Informix)</td>
+</tr>
+<tr>
+<td>defaultCatalog</td>
+<td></td>
+<td>连接池创建的连接的默认的catalog</td>
+</tr>
+<tr>
+<td>defaultTransactionIsolation</td>
+<td>driver default</td>
+<td>连接池创建的连接的默认的TransactionIsolation状态. 下面列表当中的某一个: (参考javadoc)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>NONE<br>READ_COMMITTED<br>READ_UNCOMMITTED<br>REPEATABLE_READ<br>SERIALIZABLE </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>initialSize</td>
+<td>0</td>
+<td>初始化连接:连接池启动时创建的初始化连接数量,1.2版本后支持</td>
+</tr>
+<tr>
+<td>maxActive</td>
+<td>8</td>
+<td>最大活动连接:连接池在同一时间能够分配的最大活动连接的数量, 如果设置为非正数则表示不限制</td>
+</tr>
+<tr>
+<td>maxIdle</td>
+<td>8</td>
+<td>最大空闲连接:连接池中容许保持空闲状态的最大连接数量,超过的空闲连接将被释放,如果设置为负数表示不限制</td>
+</tr>
+<tr>
+<td>minIdle</td>
+<td>0</td>
+<td>最小空闲连接:连接池中容许保持空闲状态的最小连接数量,低于这个数量将创建新的连接,如果设置为0则不创建</td>
+</tr>
+<tr>
+<td>maxWait</td>
+<td>无限</td>
+<td>最大等待时间:当没有可用连接时,连接池等待连接被归还的最大时间(以毫秒计数), 超过时间则抛出异常,如果设置为-1表示无限等待</td>
+</tr>
+<tr>
+<td>validationQuery</td>
+<td></td>
+<td>SQL查询,用来验证从连接池取出的连接,在将连接返回给调用者之前.如果指定,则查询必须是一个SQL SELECT并且必须返回至少一行记录</td>
+</tr>
+<tr>
+<td>testOnBorrow</td>
+<td>true</td>
+<td>指明是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个.注意: 设置为true后如果要生效,validationQuery参数必须设置为非空字符串</td>
+</tr>
+<tr>
+<td>testOnReturn</td>
+<td>false</td>
+<td>指明是否在归还到池中前进行检验注意: 设置为true后如果要生效,validationQuery参数必须设置为非空字符串</td>
+</tr>
+<tr>
+<td>testWhileIdle</td>
+<td>false</td>
+<td>指明连接是否被空闲连接回收器(如果有)进行检验.如果检测失败,则连接将被从池中去除.注意: 设置为true后如果要生效,validationQuery参数必须设置为非空字符串</td>
+</tr>
+<tr>
+<td>timeBetweenEvictionRunsMillis</td>
+<td>-1</td>
+<td>在空闲连接回收器线程运行期间休眠的时间值,以毫秒为单位. 如果设置为非正数,则不运行空闲连接回收器线程</td>
+</tr>
+<tr>
+<td>numTestsPerEvictionRun</td>
+<td>3</td>
+<td>在每次空闲连接回收器线程(如果有)运行时检查的连接数量</td>
+</tr>
+<tr>
+<td>minEvictableIdleTimeMillis</td>
+<td>1000 <em> 60 </em> 30</td>
+<td>连接在池中保持空闲而不被空闲连接回收器线程(如果有)回收的最小时间值，单位毫秒</td>
+</tr>
+<tr>
+<td>poolPreparedStatements</td>
+<td>false</td>
+<td>开启池的prepared statement 池功能</td>
+</tr>
+<tr>
+<td>maxOpenPreparedStatements</td>
+<td>0</td>
+<td>statement池能够同时分配的打开的statements的最大数量, 如果设置为0表示不限制</td>
+</tr>
+</tbody>
+</table>
+<p>这里可以开启PreparedStatements池. 当开启时, 将为每个连接创建一个statement池,<br>并且被下面方法创建的PreparedStatements将被缓存起来:</p>
+<blockquote>
+<p>public PreparedStatement prepareStatement(String sql)<br>public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)</p>
+</blockquote>
+<p>注意: 确认连接还有剩余资源可以留给其他statement</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>accessToUnderlyingConnectionAllowed</td>
+<td>false</td>
+<td>控制PoolGuard是否容许获取底层连接</td>
+</tr>
+</tbody>
+</table>
+<p>如果容许则可以使用下面的方式来获取底层连接:</p>
+<blockquote>
+<p>Connection conn = ds.getConnection();<br>Connection dconn = ((DelegatingConnection) conn).getInnermostDelegate();<br>…<br>conn.close();</p>
+</blockquote>
+<p>默认false不开启, 这是一个有潜在危险的功能, 不适当的编码会造成伤害.<br>(关闭底层连接或者在守护连接已经关闭的情况下继续使用它).请谨慎使用,并且仅当需要直接访问驱动的特定功能时使用.<br>注意: 不要关闭底层连接, 只能关闭前面的那个.</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>removeAbandoned</td>
+<td>false</td>
+<td>标记是否删除泄露的连接,如果他们超过了removeAbandonedTimout的限制. </td>
+</tr>
+<tr>
+<td></td>
+<td>true</td>
+<td>如果设置为true, 连接被认为是被泄露并且可以被删除,如果空闲时间超过removeAbandonedTimeout.设置为true可以为写法糟糕的没有关闭连接的程序修复数据库连接.</td>
+</tr>
+<tr>
+<td>removeAbandonedTimeout</td>
+<td>300</td>
+<td>泄露的连接可以被删除的超时值, 单位秒</td>
+</tr>
+<tr>
+<td>logAbandoned</td>
+<td>false</td>
+<td>标记当Statement或连接被泄露时是否打印程序的stack traces日志。被泄露的Statements和连接的日志添加在每个连接打开或者生成新的Statement,因为需要生成stack trace。</td>
+</tr>
+</tbody>
+</table>
+<p>如果开启”removeAbandoned”,那么连接在被认为泄露时可能被池回收. 这个机制在(getNumIdle() &lt; 2)<br> and (getNumActive() &gt; getMaxActive() - 3)时被触发.<br>举例当maxActive=20, 活动连接为18,空闲连接为1时可以触发”removeAbandoned”.<br>但是活动连接只有在没有被使用的时间超过”removeAbandonedTimeout”时才被删除,默认300秒.<br>在resultset中游历不被计算为被使用.</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Program/">Program</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/03/15/blog/20150315205359/" title="Linux将中文目录名改为英文">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Linux将中文目录名改为英文</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/03/01/blog/20140301230801/"  title="Windows 8 小技巧汇总">
+ <strong>下一篇：</strong><br/> 
+ <span>Windows 8 小技巧汇总
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2014/10/30/blog/20141030113652/" data-title="DBCP连接池配置参数说明" data-url="http://www.innereye.cn/2014/10/30/blog/20141030113652/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

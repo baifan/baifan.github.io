@@ -1,0 +1,704 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Jetty配置自定义的JSESSIONID信息 | BaiFan</title>
+    <meta name="description" id="description" content="Jetty配置自定义的JSESSIONID信息 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="自定义Jetty的JSession的配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jetty配置自定义的JSESSIONID信息">
+<meta property="og:url" content="http://www.innereye.cn/2016/08/30/jetty/Manual_Jetty_Custom_JSessionId/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="自定义Jetty的JSession的配置">
+<meta property="og:updated_time" content="2016-08-31T01:28:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jetty配置自定义的JSESSIONID信息">
+<meta name="twitter:description" content="自定义Jetty的JSession的配置">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/08/30/jetty/Manual_Jetty_Custom_JSessionId/" title="Jetty配置自定义的JSESSIONID信息" itemprop="url">Jetty配置自定义的JSESSIONID信息</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2016-08-30T02:43:05.000Z" itemprop="datePublished"> 发表于 2016-08-30</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化参数表格"><span class="toc-number">1.</span> <span class="toc-text">初始化参数表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用初始化参数"><span class="toc-number">2.</span> <span class="toc-text">使用初始化参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用Servlet-3-0-Session配置"><span class="toc-number">3.</span> <span class="toc-text">使用Servlet 3.0 Session配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SessionCookieConfiguration"><span class="toc-number">3.1.</span> <span class="toc-text">SessionCookieConfiguration</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SessionTrackingModes"><span class="toc-number">3.2.</span> <span class="toc-text">SessionTrackingModes</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>自定义Jetty的JSession的配置<br><a id="more"></a></p>
+<h3 id="初始化参数表格"><a href="#初始化参数表格" class="headerlink" title="初始化参数表格"></a>初始化参数表格</h3><table>
+<thead>
+<tr>
+<th>Context参数名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>org.eclipse.jetty.servlet.SessionCookie</td>
+<td>JSESSIONID</td>
+<td>会话cookie的名称默认是JSESSIONID，可以通过这个Context参数为特定的web应用设置名称</td>
+</tr>
+<tr>
+<td>org.eclipse.jetty.servlet.SessionIdPathParameterName</td>
+<td>jsessionid</td>
+<td>会话URL的参数名称。默认是jsessionid，但可以通过这个Context参数为特定的web应用设置名称。如果值设置为”none”则禁用URL重写</td>
+</tr>
+<tr>
+<td>org.eclipse.jetty.servlet.SessionDomain</td>
+<td>-</td>
+<td>会话域。如果ServletContext配置了该参数，就会使用该值作为会话cookie的域。如果没有设置，会话cookie就不会指定域。</td>
+</tr>
+<tr>
+<td>org.eclipse.jetty.servlet.SessionPath</td>
+<td>-</td>
+<td>会话路径。 如果ServletContext配置了该参数，就会使用该值作为会话cookie的域。如果没有设置，会话cookie路径就会使用ContextPath。</td>
+</tr>
+<tr>
+<td>org.eclipse.jetty.servlet.MaxAge</td>
+<td>-1</td>
+<td>Session的最长有效时间，单位秒.如果ServletContext配置了该参数，就会使用该值作为会话cookie的最大存活时间。如果没有设置，会话cookie的最长存活时间就会使用’-1’作为参数</td>
+</tr>
+<tr>
+<td>org.eclipse.jetty.servlet.CheckingRemoteSessionIdEncoding</td>
+<td>false</td>
+<td>默认值是’false’，如果设置成’true’，Jetty会在调用<strong>encodeURL()</strong>方法时加入<strong>JSESSIONID</strong>参数，即使是外部url</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>如果maxAge为负数，则表示该Cookie仅在本浏览器窗口以及本窗口打开的子窗口内有效，关闭窗口后该Cookie即失效。<br>maxAge为负数的Cookie，为临时性Cookie，不会被持久化，不会被写到Cookie文件中。<br>Cookie信息保存在浏览器内存中，因此关闭浏览器该Cookie就消失了。Cookie默认的maxAge值为-1。</p>
+</blockquote>
+<h3 id="使用初始化参数"><a href="#使用初始化参数" class="headerlink" title="使用初始化参数"></a>使用初始化参数</h3><p>下面提供了几个示例展示了如何使用初始化参数。</p>
+<p><strong>Context参数示例</strong><br>可以在Web应用的<strong>WEB-INF/web.xml</strong>文件中指定这些参数。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">web-app</span></span></div><div class="line">  <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></div><div class="line">  <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">  <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span></div><div class="line">  <span class="attr">version</span>=<span class="string">"2.5"</span>&gt;</div><div class="line">  ...</div><div class="line">  <span class="tag">&lt;<span class="name">context-param</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>org.eclipse.jetty.servlet.SessionCookie<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>XSESSIONID<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">context-param</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>org.eclipse.jetty.servlet.SessionIdPathParameterName<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>xsessionid<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></div><div class="line">  ...</div><div class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p><strong>Jetty应用参数设置</strong><br>可以在Jetty容器的context xml配置文件或者代码中配置这些参数。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Configure</span> <span class="attr">class</span>=<span class="string">"org.eclipse.jetty.webapp.WebAppContext"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">Set</span> <span class="attr">name</span>=<span class="string">"contextPath"</span>&gt;</span>/test<span class="tag">&lt;/<span class="name">Set</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">Set</span> <span class="attr">name</span>=<span class="string">"war"</span>&gt;</span><span class="tag">&lt;<span class="name">SystemProperty</span> <span class="attr">name</span>=<span class="string">"jetty.home"</span> <span class="attr">default</span>=<span class="string">"."</span>/&gt;</span>/webapps/test<span class="tag">&lt;/<span class="name">Set</span>&gt;</span></div><div class="line"></div><div class="line">  ...</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">Call</span> <span class="attr">name</span>=<span class="string">"setInitParameter"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">Arg</span>&gt;</span>org.eclipse.jetty.servlet.SessionCookie<span class="tag">&lt;/<span class="name">Arg</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">Arg</span>&gt;</span>XSESSIONID<span class="tag">&lt;/<span class="name">Arg</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">Call</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">Call</span> <span class="attr">name</span>=<span class="string">"setInitParameter"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">Arg</span>&gt;</span>org.eclipse.jetty.servlet.SessionIdPathParameterName<span class="tag">&lt;/<span class="name">Arg</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">Arg</span>&gt;</span>xsessionid<span class="tag">&lt;/<span class="name">Arg</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">Call</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">Configure</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p><strong>SessionManager示例</strong><br>可以在SessionManager实例或者代码中配置这些参数。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Configure</span> <span class="attr">class</span>=<span class="string">"org.eclipse.jetty.webapp.WebAppContext"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">Set</span> <span class="attr">name</span>=<span class="string">"contextPath"</span>&gt;</span>/test<span class="tag">&lt;/<span class="name">Set</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">Set</span> <span class="attr">name</span>=<span class="string">"war"</span>&gt;</span><span class="tag">&lt;<span class="name">SystemProperty</span> <span class="attr">name</span>=<span class="string">"jetty.home"</span> <span class="attr">default</span>=<span class="string">"."</span>/&gt;</span>/webapps/test<span class="tag">&lt;/<span class="name">Set</span>&gt;</span></div><div class="line"></div><div class="line">   ...</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">Get</span> <span class="attr">name</span>=<span class="string">"sessionHandler"</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">Set</span> <span class="attr">name</span>=<span class="string">"sessionManager"</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">New</span> <span class="attr">class</span>=<span class="string">"org.eclipse.jetty.server.session.HashSessionManager"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">Set</span> <span class="attr">name</span>=<span class="string">"sessionCookie"</span>&gt;</span>XSESSIONID<span class="tag">&lt;/<span class="name">Set</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">Set</span> <span class="attr">name</span>=<span class="string">"sessionIdPathParameterName"</span>&gt;</span>xsessionid<span class="tag">&lt;/<span class="name">Set</span>&gt;</span></div><div class="line">     <span class="tag">&lt;/<span class="name">New</span>&gt;</span></div><div class="line">   <span class="tag">&lt;/<span class="name">Set</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">Get</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">Configure</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h3 id="使用Servlet-3-0-Session配置"><a href="#使用Servlet-3-0-Session配置" class="headerlink" title="使用Servlet 3.0 Session配置"></a>使用Servlet 3.0 Session配置</h3><p>随着Servlet规范3.0的出现，有新的API来配置Session处理这些特性。<br>之前只能通过Jetty指定初始化参数来实现，现在可以使用容器无感知(container-agnostic)的方式通过代码或者web.xml实现。</p>
+<h4 id="SessionCookieConfiguration"><a href="#SessionCookieConfiguration" class="headerlink" title="SessionCookieConfiguration"></a>SessionCookieConfiguration</h4><p><strong>javax.servlet.SessionCookieConfig</strong>类用于设定session处理这些特性。想要了解详细信息，请参考<strong><a href="http://docs.oracle.com/javaee/6/api/javax/servlet/SessionCookieConfig.html" target="_blank" rel="external">Javadoc文档</a></strong>。<br>下面是一个示例展示：一个ServletContextListener检索到SessionCookieConfig，并且在context初始化的时候设置新的值。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> javax.servlet.SessionCookieConfig;</div><div class="line"><span class="keyword">import</span> javax.servlet.ServletContextEvent;</div><div class="line"><span class="keyword">import</span> javax.servlet.ServletContextListener;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestListener</span> <span class="keyword">implements</span> <span class="title">ServletContextListener</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextInitialized</span><span class="params">(ServletContextEvent sce)</span> </span>&#123;</div><div class="line">    String comment = <span class="string">"This is my special cookie configuration"</span>;</div><div class="line">    String domain = <span class="string">"foo.com"</span>;</div><div class="line">    String path = <span class="string">"/my/special/path"</span>;</div><div class="line">    <span class="keyword">boolean</span> isSecure = <span class="keyword">true</span>;</div><div class="line">    <span class="keyword">boolean</span> httpOnly = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">int</span> maxAge = <span class="number">30000</span>;</div><div class="line">    String cookieName = <span class="string">"FOO_SESSION"</span>;</div><div class="line">    SessionCookieConfig scf = sce.getServletContext().getSessionCookieConfig();</div><div class="line"></div><div class="line">    scf.setComment(comment);</div><div class="line">    scf.setDomain(domain);</div><div class="line">    scf.setHttpOnly(httpOnly);</div><div class="line">    scf.setMaxAge(maxAge);</div><div class="line">    scf.setPath(path);</div><div class="line">    scf.setSecure(isSecure);</div><div class="line">    scf.setName(cookieName);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextDestroyed</span><span class="params">(ServletContextEvent sce)</span> </span>&#123;</div><div class="line"></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>你也可以在web.xml中配置session处理这些特性：下面的示例和上面的代码做了完全相同的事情：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">web-app</span></span></div><div class="line">  <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></div><div class="line">  <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">  <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></div><div class="line">  <span class="attr">metadata-complete</span>=<span class="string">"true"</span></div><div class="line">  <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">session-config</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">cookie-config</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">comment</span>&gt;</span>This is my special cookie configuration<span class="tag">&lt;/<span class="name">comment</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">domain</span>&gt;</span>foo.com<span class="tag">&lt;/<span class="name">domain</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">http-only</span>&gt;</span>false<span class="tag">&lt;/<span class="name">http-only</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">max-age</span>&gt;</span>30000<span class="tag">&lt;/<span class="name">max-age</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">path</span>&gt;</span>/my/special/path<span class="tag">&lt;/<span class="name">path</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">secure</span>&gt;</span>true<span class="tag">&lt;/<span class="name">secure</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>FOO_SESSION<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">     <span class="tag">&lt;/<span class="name">cookie-config</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">session-config</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="SessionTrackingModes"><a href="#SessionTrackingModes" class="headerlink" title="SessionTrackingModes"></a>SessionTrackingModes</h4><p>除了配置会话cookie，从Servlet3.0规范后，你也可以配置<strong> javax.servlet.SessionTrackingMode</strong>跟踪session。</p>
+<p>如果想要确定容器使用了哪些默认的session跟踪特性，调用以下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javax.servlet.SessionContext.getDefaultSessionTrackingModes();</div></pre></td></tr></table></figure></p>
+<p>如果改变session的跟踪模式，调用以下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javax.servlet.SessionContext.setSessionTrackingModes(Set&lt;SessionTrackingMode&gt;);</div></pre></td></tr></table></figure></p>
+<p>也可以在web.xml文件中配置跟中模式，例如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">web-app</span></span></div><div class="line">   <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></div><div class="line">   <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">   <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></div><div class="line">   <span class="attr">metadata-complete</span>=<span class="string">"true"</span></div><div class="line">   <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</div><div class="line"></div><div class="line">   <span class="tag">&lt;<span class="name">session-config</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">tracking-mode</span>&gt;</span>URL<span class="tag">&lt;/<span class="name">tracking-mode</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">tracking-mode</span>&gt;</span>COOKIE<span class="tag">&lt;/<span class="name">tracking-mode</span>&gt;</span></div><div class="line">   <span class="tag">&lt;/<span class="name">session-config</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>原文参照 <a href="https://www.eclipse.org/jetty/documentation/current/session-management.html" target="_blank" rel="external">官方文档：Session管理</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Server/">Server</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Manual/">Manual</a><a href="/tags/Jetty/">Jetty</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/09/01/asm/4/Manual_ASM_1.1_Introduction_Motivation/" title="1.1 ASM-简介-目的">
+  <strong>上一篇：</strong><br/>
+  <span>
+  1.1 ASM-简介-目的</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/08/29/program/spring/Manual_Java_Spring_Ajax_upload_file_and_form_data/"  title="SpringMVC 异步提交表单数据">
+ <strong>下一篇：</strong><br/> 
+ <span>SpringMVC 异步提交表单数据
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/08/30/jetty/Manual_Jetty_Custom_JSessionId/" data-title="Jetty配置自定义的JSESSIONID信息" data-url="http://www.innereye.cn/2016/08/30/jetty/Manual_Jetty_Custom_JSessionId/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化参数表格"><span class="toc-number">1.</span> <span class="toc-text">初始化参数表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用初始化参数"><span class="toc-number">2.</span> <span class="toc-text">使用初始化参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用Servlet-3-0-Session配置"><span class="toc-number">3.</span> <span class="toc-text">使用Servlet 3.0 Session配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SessionCookieConfiguration"><span class="toc-number">3.1.</span> <span class="toc-text">SessionCookieConfiguration</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SessionTrackingModes"><span class="toc-number">3.2.</span> <span class="toc-text">SessionTrackingModes</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

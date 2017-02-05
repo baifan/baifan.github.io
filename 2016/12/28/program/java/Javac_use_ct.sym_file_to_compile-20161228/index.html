@@ -1,0 +1,696 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Javac命令使用ct.sym文件约束可使用的类 | BaiFan</title>
+    <meta name="description" id="description" content="Javac命令使用ct.sym文件约束可使用的类 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="在JDK6，升级为JDK7或者JDK8的过程中会遇到一些奇怪的问题，简单的介绍一下经典的ClassNotFound：sun.nio.*、com.sun.image.codec.jpeg.*等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javac命令使用ct.sym文件约束可使用的类">
+<meta property="og:url" content="http://www.innereye.cn/2016/12/28/program/java/Javac_use_ct.sym_file_to_compile-20161228/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="在JDK6，升级为JDK7或者JDK8的过程中会遇到一些奇怪的问题，简单的介绍一下经典的ClassNotFound：sun.nio.*、com.sun.image.codec.jpeg.*等。">
+<meta property="og:image" content="http://www.innereye.cn/img/program/java/javac_ct_sym/Javac_use_ct_sym_file_constructure.png">
+<meta property="og:image" content="http://www.innereye.cn/img/program/java/javac_ct_sym/Javac_use_ct_sym_JPEGCodec.png">
+<meta property="og:image" content="http://www.innereye.cn/img/program/java/javac_ct_sym/Javac_use_ct_sym_sdp_package.png">
+<meta property="og:image" content="http://www.innereye.cn/img/program/java/javac_ct_sym/Javac_use_ct_sym_image_package.png">
+<meta property="og:updated_time" content="2016-12-29T02:42:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Javac命令使用ct.sym文件约束可使用的类">
+<meta name="twitter:description" content="在JDK6，升级为JDK7或者JDK8的过程中会遇到一些奇怪的问题，简单的介绍一下经典的ClassNotFound：sun.nio.*、com.sun.image.codec.jpeg.*等。">
+<meta name="twitter:image" content="http://www.innereye.cn/img/program/java/javac_ct_sym/Javac_use_ct_sym_file_constructure.png">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/12/28/program/java/Javac_use_ct.sym_file_to_compile-20161228/" title="Javac命令使用ct.sym文件约束可使用的类" itemprop="url">Javac命令使用ct.sym文件约束可使用的类</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2016-12-28T14:03:32.000Z" itemprop="datePublished"> 发表于 2016-12-28</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#背景简介"><span class="toc-number">1.</span> <span class="toc-text">背景简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例"><span class="toc-number">2.</span> <span class="toc-text">示例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#编译尝试"><span class="toc-number">2.1.</span> <span class="toc-text">编译尝试</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原因"><span class="toc-number">3.</span> <span class="toc-text">原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方案"><span class="toc-number">4.</span> <span class="toc-text">解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#方案-1-【建议】"><span class="toc-number">4.1.</span> <span class="toc-text">方案-1 【建议】</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方案-2-【临时方案】"><span class="toc-number">4.2.</span> <span class="toc-text">方案-2 【临时方案】</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方案-3-【不建议】"><span class="toc-number">4.3.</span> <span class="toc-text">方案-3 【不建议】</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PS"><span class="toc-number"></span> <span class="toc-text">PS</span></a>
+		
+		</div>
+		
+		<p>在JDK6，升级为JDK7或者JDK8的过程中会遇到一些奇怪的问题，简单的介绍一下经典的<strong>ClassNotFound</strong>：<strong>sun.nio.*</strong>、<strong>com.sun.image.codec.jpeg.*</strong>等。<br><a id="more"></a></p>
+<h3 id="背景简介"><a href="#背景简介" class="headerlink" title="背景简介"></a>背景简介</h3><p>很多项目使用在JDK6升级到JDK7或者JDK8的过程中，会遇到一些问题。<br>本文主要介绍一下，在升级过程中，JDK的部分类在Android Studio、Eclipse（以下概称IDE，不包括神器NetBeans）的编译过程中没有提示。<br>但是使用Maven、Ant、Gradle（这三个工具在下文中概称为打包工具）打包的过程中，会出现错误<strong>‘ClassNotFound’</strong>、<strong>‘程序包sun.net.sdp不存在’</strong>。<br>例如：</p>
+<ul>
+<li>com.sun.image.codec.jpeg.JPEGCodec</li>
+<li>com.sun.image.codec.jpeg.JPEGEncodeParam</li>
+<li>jdk.internal.org.objectweb.asm.commons.AdviceAdapter</li>
+<li>sun.net.sdp.SdpSupport</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p><strong>JDK6可以编译通过</strong>、JDK7和JDK8在IDE中可以编译通过，但是使用打包工具，则编译不通过。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.sun.image.codec.jpeg.JPEGCodec;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestCtSymJdk6Pass</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> JPEGCodec jpegCodec;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="编译尝试"><a href="#编译尝试" class="headerlink" title="编译尝试"></a>编译尝试</h4><blockquote>
+<p>jdk1.6/bin/javac  TestCtSymJdk6Pass.java.java</p>
+</blockquote>
+<p><strong>通过</strong>，但是会有两个警告。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">TestCtSymJdk6Pass.java:1: 警告：com.sun.image.codec.jpeg.JPEGCodec 是 Sun 的专用 API，可能会在未来版本中删除</div><div class="line">import com.sun.image.codec.jpeg.JPEGCodec;</div><div class="line">                               ^</div><div class="line">TestCtSymJdk6Pass.java:3: 警告：com.sun.image.codec.jpeg.JPEGCodec 是 Sun 的专用 API，可能会在未来版本中删除</div><div class="line">    private JPEGCodec jpegCodec;</div><div class="line">            ^</div><div class="line">2 警告</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>jdk1.7/bin/javac  TestCtSymJdk6Pass.java</p>
+<p>jdk1.8/bin/javac  TestCtSymJdk6Pass.java</p>
+</blockquote>
+<p><strong>不通过</strong>，两个错误<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">TestCtSymJdk6Pass.java:1: 错误: 程序包com.sun.image.codec.jpeg不存在</div><div class="line">import com.sun.image.codec.jpeg.JPEGCodec;</div><div class="line">                               ^</div><div class="line">TestCtSymJdk6Pass.java:3: 错误: 找不到符号</div><div class="line">    private JPEGCodec jpegCodec;</div><div class="line">            ^</div><div class="line">  符号:   类 JPEGCodec</div><div class="line">  位置: 类 TestCtSymJdk6</div><div class="line">2 个错误</div></pre></td></tr></table></figure></p>
+<p><strong>JDK6-8都编译不通过</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.sun.image.codec.jpeg.JPEGCodec;</div><div class="line"><span class="keyword">import</span> sun.net.sdp.SdpSupport;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestCtSymJdk6NotPass</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> JPEGCodec jpegCodec;</div><div class="line">    <span class="keyword">private</span> SdpSupport sdpSupport;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>JDK6报错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">TestCtSymJdk6NotPass.java:1: 警告：com.sun.image.codec.jpeg.JPEGCodec 是 Sun 的专用 API，可能会在未来版本中删除</div><div class="line">import com.sun.image.codec.jpeg.JPEGCodec;</div><div class="line">                               ^</div><div class="line">TestCtSymJdk6NotPass.java:2: 软件包 sun.net.sdp 不存在</div><div class="line">import sun.net.sdp.SdpSupport;</div><div class="line">                  ^</div><div class="line">TestCtSymJdk6NotPass.java:4: 警告：com.sun.image.codec.jpeg.JPEGCodec 是 Sun 的专用 API，可能会在未来版本中删除</div><div class="line">    private JPEGCodec jpegCodec;</div><div class="line">            ^</div><div class="line">TestCtSymJdk6NotPass.java:5: 找不到符号</div><div class="line">符号： 类 SdpSupport</div><div class="line">位置： 类 TestCtSymJdk6NotPass</div><div class="line">    private SdpSupport sdpSupport;</div><div class="line">            ^</div><div class="line">2 错误</div><div class="line">2 警告</div></pre></td></tr></table></figure></p>
+<p><strong>添加编译参数</strong>：忽略链接文件</p>
+<blockquote>
+<p>jdk1.6/bin/javac  -XDignore.symbol.file TestCtSymJdk6NotPass.java<br>jdk1.7/bin/javac  -XDignore.symbol.file TestCtSymJdk6Pass.java<br>jdk1.8/bin/javac  -XDignore.symbol.file TestCtSymJdk6Pass.java</p>
+</blockquote>
+<p>以上三条命令都可以正常执行。</p>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>在JDK6以及以后的版本，JDK在目录下新增了一个链接文件${JDK_HOME}/lib/ct.sym文件。<br>在使用<strong>javac</strong>命令进行编译代码时，默认使用该文件进行编译时class类的检查和链接，而不是使用<strong>rt.jar</strong>。</p>
+<p>该文件保存了JDK建议使用的类描述信息。<strong>com.sun.*</strong>包和<strong>sun.*</strong>包，以及新的<strong>jdk.*</strong>都不是Open的API，是JDK内部的私有类，这些类的接口可能在之后的版本变动，也不保证平台移植性。</p>
+<p>事实上，JDK提供的Public API，仅有三个包：<strong>java.*</strong>、<strong>javax.*</strong>、<strong>org.*</strong>。它们是官方支持的公共接口（Official、Supported、Public ）。</p>
+<p><strong>ct.sym</strong>文件是一个zip压缩包，它里面包含了部分<strong>rt.jar</strong>中的类。<br><img src="/img/program/java/javac_ct_sym/Javac_use_ct_sym_file_constructure.png" alt="ct.sym文件结构"></p>
+<p><strong>ct.sym</strong>中的类文件都是简单的空函数，不包含函数体，所以非常小。<br><img src="/img/program/java/javac_ct_sym/Javac_use_ct_sym_JPEGCodec.png" alt="JPEGCodec反编译"></p>
+<p><strong>ct.sym</strong>中如果没有该类，则会出现ClassNotFound的错误。<br>比如JDK6中的<strong>sun.net.sdp.SdpSupport</strong>类。在<strong>ct.sym</strong>中就没有<strong>sun.net.sdp</strong>包。<br><img src="/img/program/java/javac_ct_sym/Javac_use_ct_sym_sdp_package.png" alt="sun.net.sdp"><br>比如JDK7中的<strong>com.sun.image.codec.jpeg.JPEGCodec</strong>类。<br><img src="/img/program/java/javac_ct_sym/Javac_use_ct_sym_image_package.png" alt="com.sun.image.codec.jpeg "></p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><h4 id="方案-1-【建议】"><a href="#方案-1-【建议】" class="headerlink" title="方案-1 【建议】"></a>方案-1 【建议】</h4><p>使用JDK开放的接口实现这部分功能。</p>
+<h4 id="方案-2-【临时方案】"><a href="#方案-2-【临时方案】" class="headerlink" title="方案-2 【临时方案】"></a>方案-2 【临时方案】</h4><p>在编译的时候加入参数<strong>-XDignore.symbol.file</strong>.</p>
+<p><strong>Maven</strong><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">source</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">target</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">encoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">encoding</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">compilerArgs</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">arg</span>&gt;</span>-XDignore.symbol.file<span class="tag">&lt;/<span class="name">arg</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">compilerArgs</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">fork</span>&gt;</span>true<span class="tag">&lt;/<span class="name">fork</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p><strong>Ant</strong><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">target</span> <span class="attr">name</span>=<span class="string">"compile"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">javac</span></span></div><div class="line">    <span class="attr">srcdir</span>=<span class="string">"src"</span></div><div class="line">    <span class="attr">destdir</span>=<span class="string">"bin"</span></div><div class="line">    <span class="attr">encoding</span>=<span class="string">"UTF-8"</span></div><div class="line">    <span class="attr">source</span>=<span class="string">"1.8"</span></div><div class="line">    <span class="attr">target</span>=<span class="string">"1.8"</span>&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">compilerarg</span> <span class="attr">value</span>=<span class="string">"-XDignore.symbol.file"</span>/&gt;</span>  </div><div class="line">    <span class="tag">&lt;<span class="name">classpath</span> <span class="attr">refid</span>=<span class="string">"classpath"</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">javac</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">target</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p><strong>Gradle</strong><br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compileJava.options.compilerArgs = [ <span class="string">'-XDignore.symbol.file=true'</span> ]</div></pre></td></tr></table></figure></p>
+<h4 id="方案-3-【不建议】"><a href="#方案-3-【不建议】" class="headerlink" title="方案-3 【不建议】"></a>方案-3 【不建议】</h4><p>非常<strong>粗暴</strong>！直接删除<strong>ct.sym</strong>文件。</p>
+<h2 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h2><p><strong>PS</strong></p>
+<blockquote>
+<p>神器-NetBeans在IDE中就会提示该错误。</p>
+</blockquote>
+<!-- http://www.oracle.com/technetwork/java/faq-sun-packages-142232.html -->
+<!-- http://docs.oracle.com/javase/tutorial/2d/images/saveimage.html -->
+<!-- http://stackoverflow.com/questions/1906673/import-com-sun-image-codec-jpeg -->
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Program/">Program</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Debug/">Debug</a><a href="/tags/Manual/">Manual</a><a href="/tags/Update/">Update</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/01/11/program/maven/Maven_Debug_20170111/" title="Maven项目遇到的BUG汇总">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Maven项目遇到的BUG汇总</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/09/30/asm/4/Manual_ASM/"  title="《ASM 4 指南》中文版 -- 前3章">
+ <strong>下一篇：</strong><br/> 
+ <span>《ASM 4 指南》中文版 -- 前3章
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/12/28/program/java/Javac_use_ct.sym_file_to_compile-20161228/" data-title="Javac命令使用ct.sym文件约束可使用的类" data-url="http://www.innereye.cn/2016/12/28/program/java/Javac_use_ct.sym_file_to_compile-20161228/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#背景简介"><span class="toc-number">1.</span> <span class="toc-text">背景简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例"><span class="toc-number">2.</span> <span class="toc-text">示例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#编译尝试"><span class="toc-number">2.1.</span> <span class="toc-text">编译尝试</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原因"><span class="toc-number">3.</span> <span class="toc-text">原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方案"><span class="toc-number">4.</span> <span class="toc-text">解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#方案-1-【建议】"><span class="toc-number">4.1.</span> <span class="toc-text">方案-1 【建议】</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方案-2-【临时方案】"><span class="toc-number">4.2.</span> <span class="toc-text">方案-2 【临时方案】</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方案-3-【不建议】"><span class="toc-number">4.3.</span> <span class="toc-text">方案-3 【不建议】</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PS"><span class="toc-number"></span> <span class="toc-text">PS</span></a>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

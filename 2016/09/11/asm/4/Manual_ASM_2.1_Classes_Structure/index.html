@@ -1,0 +1,828 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>2.1 ASM-类-结构 | BaiFan</title>
+    <meta name="description" id="description" content="2.1 ASM-类-结构 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="ASM-类-结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.1 ASM-类-结构">
+<meta property="og:url" content="http://www.innereye.cn/2016/09/11/asm/4/Manual_ASM_2.1_Classes_Structure/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="ASM-类-结构">
+<meta property="og:updated_time" content="2016-09-29T14:41:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2.1 ASM-类-结构">
+<meta name="twitter:description" content="ASM-类-结构">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/11/asm/4/Manual_ASM_2.1_Classes_Structure/" title="2.1 ASM-类-结构" itemprop="url">2.1 ASM-类-结构</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2016-09-11T14:11:33.000Z" itemprop="datePublished"> 发表于 2016-09-11</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-结构"><span class="toc-number">1.</span> <span class="toc-text">2.1 结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-概览"><span class="toc-number">1.1.</span> <span class="toc-text">2.1.1 概览</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-内部名"><span class="toc-number">1.2.</span> <span class="toc-text">2.1.2 内部名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-3-类型描述符"><span class="toc-number">1.3.</span> <span class="toc-text">2.1.3 类型描述符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-4-方法描述符"><span class="toc-number">1.4.</span> <span class="toc-text">2.1.4 方法描述符</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>ASM-类-结构<br><a id="more"></a></p>
+<p>本章介绍了使用ASM core的API，生成编译后的class和转换编译后的class。<br>首先展示了编译后的class文件，然后介绍相应的ASM接口、组件和工具类来生成和转换这些class，并且附带了很多说明性的事例。<br>方法、注释、和Generics(TODO 需要找一个合理的翻译)会在接下来的章节介绍。</p>
+<h3 id="2-1-结构"><a href="#2-1-结构" class="headerlink" title="2.1 结构"></a>2.1 结构</h3><h4 id="2-1-1-概览"><a href="#2-1-1-概览" class="headerlink" title="2.1.1 概览"></a>2.1.1 概览</h4><p>编译类的整体结构是十分简单的。事实上，不同于本地编译的应用程序，一个编译后的class保留了结构化的信息和源码中几乎所有的符号（symbol）引用。</p>
+<p>事实上，一个编译的class包含以下部分：</p>
+<ol>
+<li>描述修饰符的部分（例如public、private），类名、父类、实现的接口集合和类的注解（annotation）。</li>
+<li>class声明的属性部分。每一个部分都包括修饰符、属性名、属性类型和属性的注解。</li>
+<li>class声明的构造函数和方法部分。每一个部分都包括修饰符、方法名、返回类型、参数类型和方法的注解。它还包含了方法编译后的字节码信息，由一系列的字节码指令集组成。</li>
+</ol>
+<p>源码和编译后的class之间有一些不同之处：</p>
+<ol>
+<li>一个编译后的class仅仅描述一个类，然后一个源码文件可以包含几个类的声明。例如一个源码文件可以声明一个主类和一个该类的内部类，在编译后会成为两个class文件：一个表示该主类，另一个表示内部类。<br>然而该主类文件中包含了对内部类的引用，并且内部类定义的内部方法包含了对他们封闭方法的引用。（TODO inner classes defined inside methods contain a reference to their enclosing method.）</li>
+<li>一个编译后的class不包含注释，但是包含了类、属性、方法和代码这些元素所关联的附加属性。自从Java 5中引入了注解，起到了相同的作用后，附加属性就几乎不再被使用了。</li>
+<li>一个编译后的class不包含package声明和import声明部分，因此所有的类型名称必须是全路径的。</li>
+</ol>
+<p>另一个非常重要的结构不同是一个编译后的class包含了常量池部分。常量池是一个数组，包括该类中所有出现的数字型、字符串和类型的常量。<br>这些常量在常量池中只会被定义一次，在class文件的其他部分使用数组的索引来关联该常量值。<br>幸运的是，ASM隐藏了所有常量池相关的细节，因此你就不需要关心常量池了。表格2.1总结了编译后class的整体结构，确切的结构可以在Java虚拟机规范第四章中找到。</p>
+<blockquote>
+<p>表格2.1 ：编译后的class结构（*表示0个或者多个）</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>类结构</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>修饰符，类名，父类，接口</td>
+<td></td>
+</tr>
+<tr>
+<td>常量池：数值、字符串、类型常量</td>
+<td></td>
+</tr>
+<tr>
+<td>源文件名称（可选）</td>
+<td></td>
+</tr>
+<tr>
+<td>封闭的方法引用</td>
+<td></td>
+</tr>
+<tr>
+<td>注解*</td>
+<td></td>
+</tr>
+<tr>
+<td>Attribute*</td>
+<td></td>
+</tr>
+<tr>
+<td>内部类*</td>
+<td>名称</td>
+</tr>
+<tr>
+<td>类属性*</td>
+<td>修饰符、名称、类型</td>
+</tr>
+<tr>
+<td></td>
+<td>注解</td>
+</tr>
+<tr>
+<td></td>
+<td>Attribute</td>
+</tr>
+<tr>
+<td>方法*</td>
+<td>修饰符、名称、返回值类型和参数类型</td>
+</tr>
+<tr>
+<td></td>
+<td>注解</td>
+</tr>
+<tr>
+<td></td>
+<td>Attribute</td>
+</tr>
+<tr>
+<td></td>
+<td>编译后的code</td>
+</tr>
+</tbody>
+</table>
+<p>另一个重要的区别就是Java类型的表示方式在源码和编译后的class中不同。下一个部分将介绍它们如何在编译后的class中表示。</p>
+<h4 id="2-1-2-内部名"><a href="#2-1-2-内部名" class="headerlink" title="2.1.2 内部名"></a>2.1.2 内部名</h4><p>在许多情况下，类型被约束成一个类或者接口。<br>例如一个类的父类、一个类所实现的接口、被方法抛出的异常都不能是基础类型或者数组，一定是类或者接口。<br>这些类型在编译后class中使用内部名（internal name）表示。<br>这些内部名称是一个全路径类型，只不过分隔符由英文逗点换成了反斜线。<br>例如String类型的内部名是<strong>java/lang/String</strong></p>
+<h4 id="2-1-3-类型描述符"><a href="#2-1-3-类型描述符" class="headerlink" title="2.1.3 类型描述符"></a>2.1.3 类型描述符</h4><p>内部名仅仅用于被约束成类或者接口的类型。在所有其他情况下，比如字段类型，Java中的类型在编译后的class中使用类型描述符表示。<br>类型描述符表格（表格 2.2）如下.</p>
+<blockquote>
+<p>表格2.2 ：Java类型描述符</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Java类型</th>
+<th>类型描述符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>Z</td>
+</tr>
+<tr>
+<td>char</td>
+<td>C</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>B</td>
+</tr>
+<tr>
+<td>short</td>
+<td>S</td>
+</tr>
+<tr>
+<td>int</td>
+<td>I</td>
+</tr>
+<tr>
+<td>float</td>
+<td>F</td>
+</tr>
+<tr>
+<td>long</td>
+<td>J</td>
+</tr>
+<tr>
+<td>double</td>
+<td>D</td>
+</tr>
+<tr>
+<td>void</td>
+<td>V</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>Ljava/lang/Object;</td>
+</tr>
+<tr>
+<td>int[]</td>
+<td>[I</td>
+</tr>
+<tr>
+<td>Object[][]</td>
+<td>[[Ljava/lang/Object;</td>
+</tr>
+</tbody>
+</table>
+<p>基础类型的描述符使用单个字符：<strong>Z</strong>表示boolean，<strong>C</strong>表示char，<strong>B</strong>表示byte，<strong>S</strong>表示short，<strong>I</strong>表示int，<strong>F</strong>表示float，<strong>J</strong>表示long，<strong>D</strong>表示double。<br>类的类型描述符就是内部名加上前缀<strong>L</strong>和后缀分号(<strong>;</strong>)。例如String的类型描述符是<strong>Ljava/lang/String;</strong>。<br>数组类型的描述符就是前缀<strong>[</strong>加上数组元素的类型描述符。</p>
+<h4 id="2-1-4-方法描述符"><a href="#2-1-4-方法描述符" class="headerlink" title="2.1.4 方法描述符"></a>2.1.4 方法描述符</h4><p>一个方法描述符是由一系列类型描述符组成的一个字符串，包括方法的参数类型和返回值类型。<br>方法描述符使用小括号开始，小括号内部是方法入参的类型描述符按照顺序拼接的字符串，在加上返回值的类型描述符组成，返回值是void的时候，使用<strong>V</strong>。<br>方法的描述符不包含方法名和参数名。</p>
+<blockquote>
+<p>表格2.3 ：一些方法描述符示例</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>源码中的方法</th>
+<th>方法描述符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void m(int i, float f)</td>
+<td>(IF)V</td>
+</tr>
+<tr>
+<td>int m(Object o)</td>
+<td>(Ljava/lang/Object;)I</td>
+</tr>
+<tr>
+<td>int[] m(int i, String s)</td>
+<td>(ILjava/lang/String;)[I</td>
+</tr>
+<tr>
+<td>Object m(int[] i)</td>
+<td>([I)Ljava/lang/Object;</td>
+</tr>
+</tbody>
+</table>
+<p>只要你理解了类型描述符的转换方法，也很容易理解方法描述符。例如<strong>(I)I</strong>描述的是一个入参是<strong>int</strong>类型，返回值是<strong>int</strong>的方法。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Program/">Program</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Manual/">Manual</a><a href="/tags/ASM/">ASM</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/09/12/program/spring/Manual_Spring_MVC_Resources_Cache-20160912/" title="Spring MVC配置响应静态文件请求">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Spring MVC配置响应静态文件请求</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/09/10/asm/4/Manual_ASM_1.3_Introduction_Organization/"  title="1.3 ASM-简介-结构">
+ <strong>下一篇：</strong><br/> 
+ <span>1.3 ASM-简介-结构
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/09/11/asm/4/Manual_ASM_2.1_Classes_Structure/" data-title="2.1 ASM-类-结构" data-url="http://www.innereye.cn/2016/09/11/asm/4/Manual_ASM_2.1_Classes_Structure/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-结构"><span class="toc-number">1.</span> <span class="toc-text">2.1 结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-概览"><span class="toc-number">1.1.</span> <span class="toc-text">2.1.1 概览</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-内部名"><span class="toc-number">1.2.</span> <span class="toc-text">2.1.2 内部名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-3-类型描述符"><span class="toc-number">1.3.</span> <span class="toc-text">2.1.3 类型描述符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-4-方法描述符"><span class="toc-number">1.4.</span> <span class="toc-text">2.1.4 方法描述符</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

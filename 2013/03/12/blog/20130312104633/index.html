@@ -1,0 +1,1072 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Linux进程简介 | BaiFan</title>
+    <meta name="description" id="description" content="Linux进程简介 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="转自链接：《CSDN》
+
+
+
+线程名称
+描述
+
+
+
+
+/sbin/init
+内核启动的第一个用户级进程,引导用户空间服务
+
+
+[kthreadd]
+内核线程管理
+
+
+[migration/0]
+用于进程在不同的CPU间迁移
+
+
+[ksoftirqd/0]
+内核调度/管理第0个CPU软中断的守护进程
+
+
+[migration/1]
+管理多核心
+
+
+[ksoftirqd/1]
+内核调度/管理第1个CP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux进程简介">
+<meta property="og:url" content="http://www.innereye.cn/2013/03/12/blog/20130312104633/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="转自链接：《CSDN》
+
+
+
+线程名称
+描述
+
+
+
+
+/sbin/init
+内核启动的第一个用户级进程,引导用户空间服务
+
+
+[kthreadd]
+内核线程管理
+
+
+[migration/0]
+用于进程在不同的CPU间迁移
+
+
+[ksoftirqd/0]
+内核调度/管理第0个CPU软中断的守护进程
+
+
+[migration/1]
+管理多核心
+
+
+[ksoftirqd/1]
+内核调度/管理第1个CP">
+<meta property="og:updated_time" content="2016-08-29T02:41:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux进程简介">
+<meta name="twitter:description" content="转自链接：《CSDN》
+
+
+
+线程名称
+描述
+
+
+
+
+/sbin/init
+内核启动的第一个用户级进程,引导用户空间服务
+
+
+[kthreadd]
+内核线程管理
+
+
+[migration/0]
+用于进程在不同的CPU间迁移
+
+
+[ksoftirqd/0]
+内核调度/管理第0个CPU软中断的守护进程
+
+
+[migration/1]
+管理多核心
+
+
+[ksoftirqd/1]
+内核调度/管理第1个CP">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2013/03/12/blog/20130312104633/" title="Linux进程简介" itemprop="url">Linux进程简介</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2013-03-12T02:46:33.000Z" itemprop="datePublished"> 发表于 2013-03-12</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p>转自链接：《<a href="http://bbs.csdn.net/topics/360160535" target="_blank" rel="external">CSDN</a>》</p>
+<table>
+<thead>
+<tr>
+<th>线程名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/sbin/init</td>
+<td>内核启动的第一个用户级进程,引导用户空间服务</td>
+</tr>
+<tr>
+<td>[kthreadd]</td>
+<td>内核线程管理</td>
+</tr>
+<tr>
+<td>[migration/0]</td>
+<td>用于进程在不同的CPU间迁移</td>
+</tr>
+<tr>
+<td>[ksoftirqd/0]</td>
+<td>内核调度/管理第0个CPU软中断的守护进程</td>
+</tr>
+<tr>
+<td>[migration/1]</td>
+<td>管理多核心</td>
+</tr>
+<tr>
+<td>[ksoftirqd/1]</td>
+<td>内核调度/管理第1个CPU软中断的守护进程</td>
+</tr>
+<tr>
+<td>[events/0]</td>
+<td>处理内核事件守护进程</td>
+</tr>
+<tr>
+<td>[events/1]</td>
+<td>处理内核事件守护进程</td>
+</tr>
+<tr>
+<td>[cpuset]</td>
+<td>在每个处理器上单独运行进程，通过文件系统实现</td>
+</tr>
+<tr>
+<td>[khelper]</td>
+<td>内核帮助进程</td>
+</tr>
+<tr>
+<td>[netns]</td>
+<td>网络仿真器，模拟网络环境</td>
+</tr>
+<tr>
+<td>[async/mgr]</td>
+<td>异步加密管理进程</td>
+</tr>
+<tr>
+<td>[pm]</td>
+<td>包管理</td>
+</tr>
+<tr>
+<td>[sync_supers]</td>
+<td>特权同步，将缓冲区文件强制写入硬盘</td>
+</tr>
+<tr>
+<td>[bdi-default]</td>
+<td>JTAG调试器默认进程</td>
+</tr>
+<tr>
+<td>[kintegrityd/0]</td>
+<td>内核完整性检查</td>
+</tr>
+<tr>
+<td>[kintegrityd/1]</td>
+<td>内核完整性检查</td>
+</tr>
+<tr>
+<td>[kblockd/0]</td>
+<td>管理磁盘块读写</td>
+</tr>
+<tr>
+<td>[kblockd/1]</td>
+<td>管理磁盘块读写</td>
+</tr>
+<tr>
+<td>[kacpid]</td>
+<td>高级配置和电源管理接口</td>
+</tr>
+<tr>
+<td>[kacpi_notify]</td>
+<td>acpi进程的通知进程</td>
+</tr>
+<tr>
+<td>[kacpi_hotplug]</td>
+<td>acpi热插拔管理</td>
+</tr>
+<tr>
+<td>[ata/0]</td>
+<td>ATA硬盘接口管理</td>
+</tr>
+<tr>
+<td>[ata/1]</td>
+<td>ATA硬盘接口管理</td>
+</tr>
+<tr>
+<td>[ata_aux]</td>
+<td>ATA硬盘接口管理</td>
+</tr>
+<tr>
+<td>[khubd]</td>
+<td>内核的usb</td>
+<td>hub</td>
+</tr>
+<tr>
+<td>[kseriod]</td>
+<td>内核线程</td>
+</tr>
+<tr>
+<td>[kswapd0]</td>
+<td>内存回收，确保系统空闲物理内存的数量在一个合适的范围</td>
+</tr>
+<tr>
+<td>[ksmd]</td>
+<td>作为内核中的守护进程存在，它定期执行页面扫描，识别副本页面并合并副本，释放这些页面以供它用</td>
+</tr>
+<tr>
+<td>[aio/0]</td>
+<td>代替用户进程管理io</td>
+</tr>
+<tr>
+<td>[aio/1]</td>
+<td>代替用户进程管理io</td>
+</tr>
+<tr>
+<td>[ecryptfs-kthrea]</td>
+<td>加密系统</td>
+</tr>
+<tr>
+<td>[crypto/0]</td>
+<td>提供加密解密相关函数</td>
+</tr>
+<tr>
+<td>[crypto/1]</td>
+<td>提供加密解密相关函数</td>
+</tr>
+<tr>
+<td>[scsi_eh_0]</td>
+<td>scsi设备</td>
+</tr>
+<tr>
+<td>[scsi_eh_1]</td>
+<td>scsi设备</td>
+</tr>
+<tr>
+<td>[scsi_eh_2]</td>
+<td>scsi设备</td>
+</tr>
+<tr>
+<td>[scsi_eh_3]</td>
+<td>scsi设备</td>
+</tr>
+<tr>
+<td>[kpsmoused]</td>
+<td>内核鼠标支持</td>
+</tr>
+<tr>
+<td>[kjournald]</td>
+<td>Ext3文件系统的日志管理</td>
+</tr>
+<tr>
+<td>[kjournald]</td>
+<td>Ext3文件系统的日志管理</td>
+</tr>
+<tr>
+<td>[flush-1:0]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:1]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:2]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:3]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:4]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:5]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:6]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:7]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:8]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:9]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:10]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:11]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:12]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:13]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:14]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-1:15]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[flush-8:0]</td>
+<td>释放存储在缓存区中的数据</td>
+</tr>
+<tr>
+<td>[kjournald]</td>
+<td>Ext3文件系统的日志管理</td>
+</tr>
+<tr>
+<td>[loop0]</td>
+<td>负责对loop设备进行操作</td>
+</tr>
+<tr>
+<td>[loop1]</td>
+<td>负责对loop设备进行操作</td>
+</tr>
+<tr>
+<td>[loop2]</td>
+<td>负责对loop设备进行操作</td>
+</tr>
+<tr>
+<td>[kcopyd]</td>
+<td>内核拷贝线程</td>
+</tr>
+<tr>
+<td>[ext4-dio-unwrit]</td>
+<td>Ext4文件系统相关线程</td>
+</tr>
+<tr>
+<td>upstart-udev-bridge –daemon</td>
+<td>一个守护进程，负责接收udev信息</td>
+</tr>
+<tr>
+<td>udevd –daemon</td>
+<td>一个守护进程，在向udev提交之前重新订制热插拔事件，从而避免各种各样的竞争条件</td>
+</tr>
+<tr>
+<td>/usr/sbin/restorecond</td>
+<td>用于给SELinux监测和重新加载正确的文件上下文</td>
+</tr>
+<tr>
+<td>/sbin/auditd</td>
+<td>审计守护进程</td>
+</tr>
+<tr>
+<td>/sbin/audispd</td>
+<td>审计调度进程</td>
+</tr>
+<tr>
+<td>[kauditd]</td>
+<td>内核审核守护进程</td>
+</tr>
+<tr>
+<td>/sbin/getty   -8   38400  tty4</td>
+<td>等待用户从tty4登录</td>
+</tr>
+<tr>
+<td>/sbin/getty   -8  38400   tty5</td>
+<td>等待用户从tty5登录</td>
+</tr>
+<tr>
+<td>/sbin/getty  -8  38400   tty2</td>
+<td>等待用户从tty2登录</td>
+</tr>
+<tr>
+<td>/sbin/getty  -8   38400  tty3</td>
+<td>等待用户从tty3登录</td>
+</tr>
+<tr>
+<td>acpid  -c   /etc/acpi/events  -s   /var/run/acpid.socket</td>
+<td>一个用户空间的服务进程，它充当Linux内核与应用程序之间通信的接口</td>
+</tr>
+<tr>
+<td>cron</td>
+<td>守护进程，周期地运行用户调度的任务</td>
+</tr>
+<tr>
+<td>lwm</td>
+<td>窗口管理器</td>
+</tr>
+<tr>
+<td>fcitx</td>
+<td>输入法</td>
+</tr>
+<tr>
+<td>su</td>
+<td>切换root用户</td>
+</tr>
+<tr>
+<td>bash</td>
+<td>终端</td>
+<td></td>
+</tr>
+<tr>
+<td>ps   x</td>
+<td>查看当前用户的进程</td>
+</tr>
+</tbody>
+</table>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Linux/">Linux</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2013/05/09/blog/20130509145111/" title="Linux 命令">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Linux 命令</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2013/03/10/blog/20130310160744/"  title="MySQL四舍五入的自动机制">
+ <strong>下一篇：</strong><br/> 
+ <span>MySQL四舍五入的自动机制
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2013/03/12/blog/20130312104633/" data-title="Linux进程简介" data-url="http://www.innereye.cn/2013/03/12/blog/20130312104633/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

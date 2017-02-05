@@ -1,0 +1,646 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>『C』ubuntu命令大合集 | BaiFan</title>
+    <meta name="description" id="description" content="『C』ubuntu命令大合集 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="查看软件xxx安装内容dpkg -L xxx查找软件库中的软件apt-cache search 正则…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="『C』ubuntu命令大合集">
+<meta property="og:url" content="http://www.innereye.cn/2012/03/16/blog/20120316164201/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="查看软件xxx安装内容dpkg -L xxx查找软件库中的软件apt-cache search 正则…">
+<meta property="og:updated_time" content="2016-08-29T02:41:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="『C』ubuntu命令大合集">
+<meta name="twitter:description" content="查看软件xxx安装内容dpkg -L xxx查找软件库中的软件apt-cache search 正则…">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2012/03/16/blog/20120316164201/" title="『C』ubuntu命令大合集" itemprop="url">『C』ubuntu命令大合集</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2012-03-16T08:42:01.000Z" itemprop="datePublished"> 发表于 2012-03-16</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p>查看软件xxx安装内容dpkg -L xxx查找软件库中的软件apt-cache search 正则…<br><a id="more"></a><br>查看软件xxx安装内容<br>dpkg -L xxx<br>查找软件库中的软件<br>apt-cache search 正则表达式<br>查找软件库中的软件<br>aptitude search 软件包<br>查找文件属于哪个包<br>dpkg -S filename<br>查找文件属于哪个包<br>apt-file search filename<br>查询软件xxx依赖哪些包<br>apt-cache depends xxx<br>查询软件xxx被哪些包依赖<br>apt-cache rdepends xxx<br>增加一个光盘源<br>sudo apt-cdrom add<br>系统升级</p>
+<p>sudo apt-get update;sudo apt-get dist-upgrade<br>清除已删除包的残馀配置文件<br>dpkg -l |grep ^rc|awk ‘{print $2}’ |sudo xargs dpkg -P<br>编译时缺少h文件的自动处理<br>sudo auto-apt run ./configure<br>查看安装软件时下载包的临时存放目录<br>ls /var/cache/apt/archives<br>备份当前系统安装的所有包的列表<br>dpkg –get-selections | grep -v deinstall &gt; ~/somefile<br>从备份的安装包的列表文件恢复所有包<br>dpkg –set-selections &lt; ~/somefile;sudo dselect<br>清理旧版本的软件缓存<br>sudo apt-get autoclean<br>清理所有软件缓存<br>sudo apt-get clean<br>删除系统不再使用的孤立软件<br>sudo apt-get autoremove<br>查看包在服务器上面的地址<br>apt-get -qq –print-uris install ssh | cut -d\‘ -f2<br>查看内核<br>uname -a<br>查看Ubuntu版本<br>cat /etc/issue 或 lsb_release -a<br>查看内核加载的模块<br>lsmod<br>查看PCI设备<br>lspci<br>查看USB设备<br>lsusb -v<br>查看网卡状态<br>sudo ethtool eth0<br>查看CPU信息<br>cat /proc/cpuinfo<br>显示当前硬件信息<br>sudo lshw<br>显示系统运行时间<br>uptime<br>查看硬盘的分区<br>sudo fdisk -l<br>硬盘分区sudo fdisk /dev/sda<br>硬盘格式化<br>sudo mkfs.ext3 /dev/sda1<br>硬盘检查(请不要检查已经挂载的分区，否则容易损坏数据)<br>sudo fsck /dev/sda1<br>分区挂载<br>sudo mount -t 文件系统类型 (-o nls=utf8 或 -o iocharset=utf8) 设备路经 访问路经<br>分区卸载<br>sudo umount 目录名或设备名<br>查看IDE硬盘信息<br>sudo hdparm -i /dev/hda<br>查看STAT硬盘信息<br>sudo hdparm -I /dev/sda 或 sudo blktool /dev/sda id<br>查看硬盘剩馀空间<br>df<br>查看目录占用空间<br>du -hs 目录名<br>优盘没法卸载<br>sync;fuser -km /media/usbdisk<br>查看硬盘当前读写情况<br>sudo iostat -x 2<br>查看当前的内存使用情况<br>free<br>动态显示进程执行情况<br>top<br>查看当前有哪些进程<br>ps -A<br>查看当前进程树<br>pstree<br>中止一个进程<br>kill 进程号 或 killall 进程名<br>强制中止一个进程<br>kill -9 进程号 或 killall -9 进程名<br>图形方式中止一个程序<br>xkill 出现骷髅标志的鼠标，点击需要中止的程序即可<br>查看进程打开的文件<br>lsof -p<br>显示开启文件abc.txt的进程<br>lsof abc.txt<br>显示22端口现在运行什么程序<br>lsof -i :22<br>显示nsd进程现在打开的文件<br>lsof -c nsd<br>在后台运行程序，退出登录后，并不结束程序<br>nohup 程序 &amp;<br>详细显示程序的运行信息<br>strace -f -F -o outfile<br>增加系统最大打开文件个数<br>ulimit -n 4096 或 echo 4096 &gt; /proc/sys/fs/file-max<br>配置 ADSL<br>sudo pppoeconf<br>ADSL手工拨号<br>sudo pon dsl-provider<br>激活 ADSL<br>sudo /etc/ppp/pppoe_on_boot<br>断开 ADSL<br>sudo poff<br>查看拨号日志<br>sudo plog<br>如何设置动态域名<br>w3m -no-cookie -dump ‘<a href="http://usere:pass@members.3322.org/dyndns/update?system=dyndns&amp;hostname=yourdns.3322.org’" target="_blank" rel="external">http://usere:pass@members.3322.org/dyndns/update?system=dyndns&amp;hostname=yourdns.3322.org’</a><br>根据IP查网卡地址<br>arping IP地址<br>根据IP查电脑名<br>nmblookup -A IP地址<br>查看当前IP地址<br>ifconfig eth0 |awk ‘/inet/ {split($2,x,\”:\”);print x[2]}’<br>查看当前外网的IP地址<br>w3m -no-cookie -dump www.123cha.com|grep -o ‘[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}’<br>查看当前监听80端口的程序<br>lsof -i :80<br>查看当前网卡的物理地址<br>arp -a | awk ‘{print $4}’<br>同一个网卡增加第二个IP地址<br>sudo ifconfig eth0:0 1.2.3.4 netmask 255.255.255.0<br>立即让网络支持nat<br>echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward; sudo iptables -t nat -I POSTROUTING -j MASQUERADE<br>查看路由信息<br>netstat -rn 或 sudo route -n<br>手工增加一条路由<br>sudo route add -net 192.168.0.0 netmask 255.255.255.0 gw 172.16.0.1<br>手工删除一条路由<br>sudo route del -net 192.168.0.0 netmask 255.255.255.0 gw 172.16.0.1<br>修改网卡MAC地址的方法<br>sudo ifconfig eth0 hw ether 00:AA:BB:CC:DD:EE<br>统计当前IP连接的个数<br>netstat -na|grep ESTABLISHED|awk ‘{print $5}’|awk -F: ‘{print $1}’|sort|uniq -c|sort -r -n<br>屏蔽IPV6<br>echo ‘blacklist ipv6′ | sudo tee /etc/modprobe.d/blacklist-ipv6<br>察看当前网络连接状况以及程序<br>sudo netstat -atnp<br>查看ADSL的当前流量<br>sudo ethstatus -i ppp0<br>查看域名的注册备案情况<br>whois baidu.cn<br>查看到某一个域名的路由情况<br>tracepath baidu.cn<br>重新从服务器获得IP地址<br>sudo dhclient<br>下载网站文档<br>wget -r -p -np -k <a href="http://www.xxx.com" target="_blank" rel="external">http://www.xxx.com</a><br>如何5个线程下载<br>axel -n 5 <a href="http://www.xxx.com/downloadfile.zip" target="_blank" rel="external">http://www.xxx.com/downloadfile.zip</a><br>添加一个服务<br>sudo update-rc.d 服务名 defaults 99<br>删除一个服务<br>sudo update-rc.d 服务名 remove<br>临时重启一个服务<br>/etc/init.d/服务名 restart<br>临时关闭一个服务<br>/etc/init.d/服务名 stop<br>临时启动一个服务<br>/etc/init.d/服务名 start<br>增加用户<br>sudo adduser 用户名<br>删除用户<br>sudo deluser 用户名<br>修改当前用户的密码<br>passwd<br>修改用户密码<br>sudo passwd 用户名<br>修改用户资料<br>sudo chfn userid<br>如何禁用某个帐户<br>sudo usermod -L 用户名 或 sudo passwd -l 用户名<br>如何启用某个帐户<br>sudo usermod -U 用户名 或 sudo passwd -u 用户名<br>增加用户到admin组<br>sudo usermod -G admin -a 用户名<br>配置默认Java使用哪个<br>sudo update-alternatives –config java<br>终端设置代理<br>export http_proxy=<a href="http://xx.xx.xx.xx:xxx" target="_blank" rel="external">http://xx.xx.xx.xx:xxx</a><br>修改系统登录信息<br>sudo vim /etc/motd<br>使用sun的java编译器<br>sudo update-java-alternatives -s java-6-sun<br>切换输入法引擎<br>im-switch -c<br>转换文件名由GBK为UTF8<br>convmv -r -f cp936 -t utf8 –notest –nosmart <em><br>转换文件内容由GBK到UTF8<br>iconv -f gbk -t utf8 $i &gt; newfile<br>转换 mp3 标签编码<br>sudo apt-get install python-mutagen;find . -iname ‘</em>.mp3′ -execdir mid3iconv -e GBK {} \;<br>控制台下显示中文<br>sudo apt-get install zhcon;zhcon –utf8 –drv=vga<br>lftp 登录远程Windows中文FTP　<br>lftp :~&gt;set ftp:charset GBK<br>PDF 文件乱码<br>sudo apt-get install xpdf-chinese-simplified xpdf-chinese-traditional poppler-data<br>一屏查看文件内容<br>cat 文件名<br>分页查看文件内容<br>more 文件名<br>可控分页查看文件内容<br>less 文件名<br>根据字符串匹配来查看文件部分内容<br>grep 字符串 文件名<br>显示包含字符串的文件名<br>grep -l -r 字符串 路径<br>显示不包含字符串的文件名<br>grep -L -r 字符串 路径<br>快速查找某个文件<br>find 目录 -name 文件名<br>创建两个空文件<br>touch file1 file2<br>递归式创建一些嵌套目录<br>mkdir –p /tmp/xxs/dsd/efd<br>递归式删除嵌套目录<br>rm –fr /tmp/xxs<br>回当前用户的宿主目录<br>cd ~<br>查看当前所在目录的绝对路经<br>pwd<br>列出当前目录下的所有文件<br>ls -a<br>移动路径下的文件并改名<br>mv 路径/文件 /新路径/新文件名<br>复制文件或者目录<br>cp -av 原文件或原目录 新文件或新目录<br>查看文件类型<br>file filename<br>对比两个文件之间的差异<br>diff file1 file2<br>显示xxx文件倒数6行的内容<br>tail -n 6 xxx<br>不停地显示最新的内容<br>tail -n 10 -f /var/log/apache2/access.log<br>查看文件第五行到第10行的内容<br>sed -n ’5,10p’ /var/log/apache2/access.log<br>查找关于xxx的命令<br>apropos xxx 或 man -k xxx<br>通过ssh传输文件<br>scp -rp /path/filename username@remoteIP:/path<br>把所有文件的后辍由rm改为rmvb<br>rename ‘s/.rm$/.rmvb/’ <em><br>把所有文件名中的大写改为小写<br>rename ‘tr/A-Z/a-z/’ </em><br>删除特殊文件名 –help.txt 的文件<br>rm — –help.txt 或 rm ./–help.txt<br>查看当前目录的子目录<br>ls -d <em>/. 或 echo </em>/.<br>将最近30天访问过的文件移动到上级back目录<br>find . -type f -atime -30 -exec mv {} ../back \;<br>显示一小时以内的包含 xxxx 的文件<br>find . -type f -mmin -60|xargs -i grep -l xxxx ‘{}’<br>显示最近2小时到8小时之内的文件<br>find . -mmin +120 -mmin -480 -exec more {} \;<br>删除修改时间在30天之前的文件<br>find . -type f -mtime +30 -mtime -3600 -exec rm {} \;<br>删除创建时间在30天之前的文件<br>find . -type f -ctime +30 -ctime -3600 -exec rm {} \;<br>删除掉guest的以avi或rm结尾的文件<br>find . -name ‘<em>.avi’ -o -name ‘</em>.rm’ -user ‘guest’ -exec rm {} \;<br>删除掉不以java和xml结尾7天没有使用的文件<br>find . ! -name <em>.java ! -name ‘</em>.xml’ -atime +7 -exec rm {} \;<br>删除所有的 .svn 目录<br>find . -name .svn -type d -exec rm -fr {} \;<br>删除所有以“~”结尾的临时文件<br>find . -name ‘<em>~’ -exec rm {} \;<br>统计当前文件个数<br>ls .|wc -w<br>统计当前目录个数<br>ls -l |grep ^d|wc -l<br>显示当前目录下2006-01-01的文件名<br>ls -l |grep 2006-01-01 |awk ‘{print $8}’<br>使用ssh方式同步远程数据到本地目录<br>rsync -Pa -I –size-only –delete –timeout=300 Remote_IP:/home/ubuntu /backup<br>增加 7Z 压缩软件<br>sudo apt-get install p7zip p7zip-full p7zip-rar<br>增加 rar 软件压缩和解压缩支持<br>sudo apt-get install rar unrar<br>解压缩 xxx.tar.gz<br>tar -zxvf xxx.tar.gz<br>解压缩 xxx.tar.bz2<br>tar -jxvf xxx.tar.bz2<br>压缩aaa bbb目录为xxx.tar.gz<br>tar -zcvf xxx.tar.gz aaa bbb<br>压缩aaa bbb目录为xxx.tar.bz2<br>tar -jcvf xxx.tar.bz2 aaa bbb<br>增加 lha 支持<br>sudo apt-get install lha<br>增加解 cab 文件支持<br>sudo apt-get install cabextract<br>显示日历<br>cal<br>设置日期<br>date -s mm/dd/yy<br>设置时间<br>date -s HH:MM<br>将时间写入CMOS<br>hwclock –systohc<br>查看CMOS时间<br>hwclock –show<br>读取CMOS时间<br>hwclock –hctosys<br>从服务器上同步时间<br>sudo ntpdate ntp.ubuntu.com<br>设置电脑的时区为上海<br>sudo cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime<br>关闭UTC，将当前时间写入CMOS。<br>sudo sed -ie ‘s/UTC=yes/UTC=no/g’ /etc/default/rcS;sudo hwclock –systohc<br>修改mysql的root口令<br>sudo mysqladmin -u root -p password ‘你的新密码’<br>如何使用命令关闭显示器<br>xset dpms force off<br>设置CPU的频率<br>sudo apt-get install cpufrequtils;sudo cpufreq-info<br>命令关机<br>sudo halt<br>现在关机<br>sudo shutdown -h now<br>晚上11点自动关机<br>sudo shutdown -h 23:00<br>60分钟后关机<br>sudo shutdown -h +60<br>命令重启电脑<br>sudo reboot<br>现在重启电脑<br>sudo shutdown -r now<br>关闭笔记本的触摸板<br>synclient touchpadoff=1<br>开启笔记本的触摸板<br>synclient touchpadoff=0<br>统计每个单词的出现频率并排序<br>awk ‘{arr[$1]+=1 }END{for(i in arr){print arr[i]\”\t\”i}}’ FILE_NAME | sort -rn<br>统计80端口的连接并排序<br>netstat -na|grep :80|awk ‘{print $5}’|awk -F: ‘{print $1}’|sort|uniq -c|sort -r -n<br>把终端加到右键菜单<br>sudo apt-get install nautilus-open-terminal<br>如何删除Totem电影播放机的播放历史记录<br>rm ~/.recently-used<br>vim 如何显示彩色字符<br>sudo cp /usr/share/vim/vimcurrent/vimrc_example.vim /usr/share/vim/vimrc<br>让 vim 直接支持编辑 .gz 文件<br>sudo apt-get install vim-full<br>vim 如何显示行号<br>:set number<br>查看在会话设置的启动程序<br>ls ~/.config/autostart<br>提高wine的反应速度<br>sudo sed -ie ‘/GBK/,/^}/d’ /usr/share/X11/locale/zh_CN.UTF-8/XLC_LOCALE<br>制作ISO文件<br>mkisofs -o test.iso -Jrv -V test_disk /home/carla/<br>延迟10秒抓图<br>gnome-screenshot -d 10<br>延迟5秒抓当前激活窗口<br>gnome-screenshot -w -d 5<br>如何命令行刻录<br>cdrecord -scanbus;cdrecord -v -eject speed=8 dev=1,1,0 test.iso<br>回收站在哪里<br>~/.local/share/Trash/<br>默认打开方式的配置文件在哪里<br>~/.local/share/applications/mimeapps.list<br>如何查看HTTP头<br>w3m -dump_head <a href="http://www.xxx.com" target="_blank" rel="external">http://www.xxx.com</a><br>连续监视内存使用情况<br>watch -d free<br>如何切换到root帐号<br>sudo -Hs<br>只读挂载ntfs分区<br>sudo mount -t ntfs -o nls=utf8,umask=0 /dev/sdb1 /mnt/c<br>可写挂载ntfs分区<br>sudo mount -t ntfs-3g -o locale=zh_CN.utf8,umask=0 /dev/sdb1 /mnt/c<br>挂载fat32分区<br>sudo mount -t vfat -o iocharset=utf8,umask=0 /dev/sda1 /mnt/c<br>挂载共享文件<br>sudo mount -t smbfs -o username=xxx,password=xxx,iocharset=utf8 //192.168.1.1/share /mnt/share<br>挂载ISO文件<br>sudo mount -t iso9660 -o loop,utf8 xxx.iso /mnt/iso<br>带行号显示文件的内容<br>nl 文件名<br>批量将rmvb转为avi<br>for i in </em>; do mencoder -oac mp3lame -lameopts vbr=3 -ovc xvid -xvidencopts fixed_quant=4 -of avi $i -o <code>echo $i | sed -e ‘s/rmvb$/avi/’</code>; done<br>批量将svg转为png<br>for i in <em>; do inkscape $i –export-png=<code>echo $i | sed -e ‘s/svg$/png/’</code>; done<br>批量缩小图片到30%<br>for i in </em>; do convert -resize 30%x30% $1 sm-$1; done<br>批量转换jpg到png<br>for i in <em>; do convert $i <code>echo $i | sed -e ‘s/jpg$/png/’</code>; done<br>获取jpg的扩展信息(Exif)<br>identify -verbose xxx.jpg<br>查看当前系统所有的监听端口<br>nc -zv localhost 1-65535<br>去掉文件中的^M<br>cat filename | tr -d \”^M\” &gt; newfile<br>去掉文件中的^M<br>sed -e \”s/^M//g\” filename &gt; newfile<br>转换bin/cue到iso文件<br>sudo apt-get install bchunk;bchunk image.bin image.cue image<br>转换目录到iso文件<br>mkisofs dirname -o isofile.iso<br>转换CD到iso文件<br>dd if=/dev/cdrom of=isofile.iso<br>ape转换为flac<br>sudo apt-get install flac shntool;shntool split -t \”%n.%p-%t\” -f example_UTF-8.cue -o flac example.ape -d flacOutputDir<br>ape转换为mp3<br>sudo apt-get install flac shntool lame;shntool split -t \”%n.%p-%t\” -f example_UTF-8.cue -o ‘cust ext=mp3 lame –r3mix -b 320 –quiet – %f’ example.ape -d mp3OutputDir<br>检查本地是否存在安全隐患<br>sudo apt-get install rkhunter;rkhunter –checkall<br>如何安装杀毒软件<br>sudo apt-get install clamav;clamscan -r ~/<br>查看网络连接状态<br>netstat -n | awk ‘/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}’<br>统计程序的内存耗用<br>ps -eo fname,rss|awk ‘{arr[$1]+=$2} END {for (i in arr) {print i,arr[i]}}’|sort -k2 -nr<br>显示当前内存大小<br>free -m |grep \”Mem\” | awk ‘{print $2}’<br>按内存从大到小排列进程<br>ps -eo \”%C : %p : %z : %a\”|sort -k5 -nr<br>按cpu利用率从大到小排列进程<br>ps -eo \”%C : %p : %z : %a\”|sort -nr<br>统计当前目录下所有jpg文件的尺寸<br>find . -name </em>.jpg -exec wc -c {} \;|awk ‘{print $1}’|awk ‘{a+=$1}END{print a}’<br>清除僵死进程<br>ps -eal | awk ‘{ if ($2 == \”Z\”) {print $4}}’ | sudo kill -9<br>CD 抓轨为 mp3 (有损)<br>sudo apt-get install abcde;abcde -o mp3 -b<br>CD 抓轨为 Flac (无损)<br>sudo apt-get install abcde;abcde -o flac -b<br>显示系统安装包的统计信息<br>apt-cache stats<br>显示系统全部可用包的名称<br>apt-cache pkgnames<br>显示包的信息</p>
+<hr>
+<p> 如转载请注明：转自<br><a href="http://www.ubuntuhome.com/" target="_blank" rel="external">Ubuntu之家</a> {<br><a href="http://www.ubuntuhome.com/" target="_blank" rel="external">www.ubuntuhome.com</a>}</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Linux/">Linux</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2013/03/10/blog/20130310160744/" title="MySQL四舍五入的自动机制">
+  <strong>上一篇：</strong><br/>
+  <span>
+  MySQL四舍五入的自动机制</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2012/02/17/blog/20120217100225/"  title="【Bug】Ubuntu11.10-E- 无法获得锁">
+ <strong>下一篇：</strong><br/> 
+ <span>【Bug】Ubuntu11.10-E- 无法获得锁
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2012/03/16/blog/20120316164201/" data-title="『C』ubuntu命令大合集" data-url="http://www.innereye.cn/2012/03/16/blog/20120316164201/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

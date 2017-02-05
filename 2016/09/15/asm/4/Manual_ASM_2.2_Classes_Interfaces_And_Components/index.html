@@ -1,0 +1,715 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>2.2 ASM-类-接口和组件 | BaiFan</title>
+    <meta name="description" id="description" content="2.2 ASM-类-接口和组件 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="ASM-类-接口和组件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.2 ASM-类-接口和组件">
+<meta property="og:url" content="http://www.innereye.cn/2016/09/15/asm/4/Manual_ASM_2.2_Classes_Interfaces_And_Components/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="ASM-类-接口和组件">
+<meta property="og:image" content="http://www.innereye.cn/img/program/asm/ASM-2.2.4-19-2.6.png">
+<meta property="og:image" content="http://www.innereye.cn/img/program/asm/ASM-2.2.4-20-2.7.png">
+<meta property="og:updated_time" content="2016-09-29T14:41:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2.2 ASM-类-接口和组件">
+<meta name="twitter:description" content="ASM-类-接口和组件">
+<meta name="twitter:image" content="http://www.innereye.cn/img/program/asm/ASM-2.2.4-19-2.6.png">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/15/asm/4/Manual_ASM_2.2_Classes_Interfaces_And_Components/" title="2.2 ASM-类-接口和组件" itemprop="url">2.2 ASM-类-接口和组件</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2016-09-15T14:09:37.000Z" itemprop="datePublished"> 发表于 2016-09-15</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-接口和组件"><span class="toc-number">1.</span> <span class="toc-text">2.2 接口和组件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-介绍"><span class="toc-number">1.1.</span> <span class="toc-text">2.2.1 介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-解析Class"><span class="toc-number">1.2.</span> <span class="toc-text">2.2.2 解析Class</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-生成Class"><span class="toc-number">1.3.</span> <span class="toc-text">2.2.3 生成Class</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-4-转换生成的class"><span class="toc-number">1.4.</span> <span class="toc-text">2.2.4 转换生成的class</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#优化"><span class="toc-number">1.4.1.</span> <span class="toc-text">优化</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#使用转换后的class"><span class="toc-number">1.4.2.</span> <span class="toc-text">使用转换后的class</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-5-删除class的成员"><span class="toc-number">1.5.</span> <span class="toc-text">2.2.5 删除class的成员</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-6-添加class成员"><span class="toc-number">1.6.</span> <span class="toc-text">2.2.6 添加class成员</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-7-转换链路"><span class="toc-number">1.7.</span> <span class="toc-text">2.2.7 转换链路</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>ASM-类-接口和组件<br><a id="more"></a></p>
+<h3 id="2-2-接口和组件"><a href="#2-2-接口和组件" class="headerlink" title="2.2 接口和组件"></a>2.2 接口和组件</h3><h4 id="2-2-1-介绍"><a href="#2-2-1-介绍" class="headerlink" title="2.2.1 介绍"></a>2.2.1 介绍</h4><p><strong>ASM API</strong>对编译类进行生成和编辑，都是基于抽象类<strong>ClassVisitor</strong>实现的（参照表格 2.4）。<br>该类中的每一个方法都对应class文件中的同名的结构部分（参考表格-2.1：编译后的class结构）。<br>简单的结构部分可以通过一个方法进行方法，该方法参数描述了该结构部分，返回void。<br>其他可能是任意长度和复杂性的结构部分，可以通过调用一个初始化方法，返回一个辅助的visitor类。<br>这便是<strong>visitAnnotation</strong>、<strong>visitField</strong>、和<strong>visitMethod</strong>的调用模式，这几个方法分别返回<strong>AnnotationVisitor</strong>、<strong>FieldVisitor</strong>和<strong>MethodVisitor</strong>。<br>同样的原则也适用于递归调用这些辅助类。例如每个方法在抽象类<strong>FieldVisitor</strong>中都对应了class文件中同名的<strong>子结构</strong>。</p>
+<blockquote>
+<p>图 2.4 ：ClassVisitor类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassVisitor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">int</span> api;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> ClassVisitor cv;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ClassVisitor</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> api)</span> </span>&#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ClassVisitor</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> api, <span class="keyword">final</span> ClassVisitor cv)</span> </span>&#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visit</span><span class="params">(<span class="keyword">int</span> version, <span class="keyword">int</span> access, String name, String signature,</span></span></div><div class="line">            String superName, String[] interfaces) &#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitSource</span><span class="params">(String source, String debug)</span> </span>&#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitOuterClass</span><span class="params">(String owner, String name, String desc)</span> </span>&#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> AnnotationVisitor <span class="title">visitAnnotation</span><span class="params">(String desc, <span class="keyword">boolean</span> visible)</span> </span>&#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> AnnotationVisitor <span class="title">visitTypeAnnotation</span><span class="params">(<span class="keyword">int</span> typeRef,</span></span></div><div class="line">            TypePath typePath, String desc, <span class="keyword">boolean</span> visible) &#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitAttribute</span><span class="params">(Attribute attr)</span> </span>&#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitInnerClass</span><span class="params">(String name, String outerName,</span></span></div><div class="line">            String innerName, <span class="keyword">int</span> access) &#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> FieldVisitor <span class="title">visitField</span><span class="params">(<span class="keyword">int</span> access, String name, String desc,</span></span></div><div class="line">            String signature, Object value) &#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> MethodVisitor <span class="title">visitMethod</span><span class="params">(<span class="keyword">int</span> access, String name, String desc,</span></span></div><div class="line">            String signature, String[] exceptions) &#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitEnd</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//....</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+<p>在<strong>ClassVisitor</strong>类中的<strong>visitAnnotation</strong>方法会返回辅助类<strong>AnnotationVisitor</strong>。<br>在下一个章节会介绍如何创建和使用这些辅助类：在本章节将介绍一些可以单独使用<strong>ClassVisitor</strong>解决的简单问题。</p>
+<blockquote>
+<p>图表-2.5.: FieldVisitor类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">FieldVisitor</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FieldVisitor</span><span class="params">(<span class="keyword">int</span> api)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FieldVisitor</span><span class="params">(<span class="keyword">int</span> api, FieldVisitor fv)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> AnnotationVisitor <span class="title">visitAnnotation</span><span class="params">(String desc, <span class="keyword">boolean</span> visible)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitAttribute</span><span class="params">(Attribute attr)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitEnd</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+<p><strong>ClassVisitor</strong>类的方法必须按照以下的顺序被调用执行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">visit visitSource? visitOuterClass? ( visitAnnotation | visitAttribute )\*</div><div class="line">( visitInnerClass | visitField | visitMethod )\*</div><div class="line">visitEnd</div></pre></td></tr></table></figure></p>
+<p><strong>visit</strong>方法必须被最先调用，接着再最多调用一次<strong>visitSource</strong>方法，接着再最多调用一次<strong>visitOuterClass</strong>方法，<br>接着再按照任意次序调用任意次的<strong>visitAnnotation</strong>和<strong>visitAttribute</strong>方法，<br>接着再按照任意次序调用任意次的<strong>visitInnerClass</strong>、<strong>visitField</strong>和<strong>visitMethod</strong>方法，最后调用一次<strong>visitEnd</strong>方法。</p>
+<p>ASM提供了三个基于<strong>ClassVisitor</strong>的组件进行生成和转换class：</p>
+<ol>
+<li><strong>ClassReader</strong>可以从byte数组中解析一个编译后的class，将一个ClassVisitor的实例作为accept的方法参数传递给<strong>ClassReader</strong>，<br>然后调用ClassVisitor的响应<strong>visitXxx方法。</strong>ClassReader<strong>可以被作为基于</strong>event**模式的生产者。</li>
+<li><strong>ClassWriter</strong>是抽象类<strong>ClassVisitor</strong>的子类，它可以直接以二进制的方法构建编译后的class。<strong>ClassWriter</strong>可以看作是基于<strong>event</strong>模式的消费者。</li>
+<li><strong>ClassVisitor</strong>可以完全代理其他<strong>ClassVisitor</strong>的方法调用。<strong>ClassVisitor</strong>可被看作是基于<strong>event</strong>模式的过滤器。</li>
+</ol>
+<p>接下来的部分，是一些具体示例，演示使用这些组件如何构建和转换class。</p>
+<h4 id="2-2-2-解析Class"><a href="#2-2-2-解析Class" class="headerlink" title="2.2.2 解析Class"></a>2.2.2 解析Class</h4><p>解析一个已经存在的class，所需要的唯一组件就是<strong>ClassReader</strong>类。举个例子介绍一下<strong>ClassReader</strong>类。<br>假设我们要打印一个class的内容，类似<strong>javap</strong>。</p>
+<p><strong>第一步</strong>要写一个<strong>ClassVisitor</strong>的子类来访问需要打印的信息。下面是一种方式，过于简单的实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.objectweb.asm.Opcodes.ASM4;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.objectweb.asm.AnnotationVisitor;</div><div class="line"><span class="keyword">import</span> org.objectweb.asm.Attribute;</div><div class="line"><span class="keyword">import</span> org.objectweb.asm.ClassVisitor;</div><div class="line"><span class="keyword">import</span> org.objectweb.asm.FieldVisitor;</div><div class="line"><span class="keyword">import</span> org.objectweb.asm.MethodVisitor;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassPrinter</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ClassPrinter</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(ASM4);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visit</span><span class="params">(<span class="keyword">int</span> version, <span class="keyword">int</span> access, String name, String signature, String superName, String[] interfaces)</span> </span>&#123;</div><div class="line">        System.out.println(name + <span class="string">" extends "</span> + superName + <span class="string">" &#123;"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitSource</span><span class="params">(String source, String debug)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitOuterClass</span><span class="params">(String owner, String name, String desc)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> AnnotationVisitor <span class="title">visitAnnotation</span><span class="params">(String desc, <span class="keyword">boolean</span> visible)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitAttribute</span><span class="params">(Attribute attr)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitInnerClass</span><span class="params">(String name, String outerName, String innerName, <span class="keyword">int</span> access)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> FieldVisitor <span class="title">visitField</span><span class="params">(<span class="keyword">int</span> access, String name, String desc, String signature, Object value)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">" "</span> + desc + <span class="string">" "</span> + name); <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> MethodVisitor <span class="title">visitMethod</span><span class="params">(<span class="keyword">int</span> access, String name, String desc, String signature, String[] exceptions)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">" "</span> + name + desc); <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitEnd</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"&#125;"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>第二步</strong>是绑定<strong>ClassPrinter</strong>和<strong>ClassReader</strong>，这样<strong>ClassReader</strong>产生的event都可以被<strong>ClassPrinter</strong>消费：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ClassPrinter cp = <span class="keyword">new</span> ClassPrinter();</div><div class="line">ClassReader cr = <span class="keyword">new</span> ClassReader(<span class="string">"java.lang.Runnable"</span>);</div><div class="line">cr.accept(cp, <span class="number">0</span>);</div></pre></td></tr></table></figure></p>
+<p>第而行语句创建了一个解析<strong>java.lang.Runnable</strong>接口的<strong>ClassReader</strong>。最后一行调用<strong>accept</strong>方法，解析<strong>Runnable</strong>接口并且调用对象<strong>cp</strong>中<strong>ClassVisitor</strong>的响应方法。<br>以下是程序输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">java/lang/Runnable extends java/lang/Object &#123;</div><div class="line">    run()V</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>ClassReader</strong>构造实例的方法有很多种。<br>像上面通过class全名调用的方式必须确保class文件能被访问到，或者通过一个代表class实体信息的byte数组或者<strong>InputSteam</strong>构造实例。<br>读取一个class的输入流，可以通过调用<strong>ClassLoader</strong>的<strong>getResourceAsStream</strong>方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cl.getResourceAsStream(classname.replace(’.’, ’/’) + <span class="string">".class"</span>);</div></pre></td></tr></table></figure></p>
+<h4 id="2-2-3-生成Class"><a href="#2-2-3-生成Class" class="headerlink" title="2.2.3 生成Class"></a>2.2.3 生成Class</h4><p>生成一个class所需要的唯一组件就是<strong>ClassWriter</strong>。举个例子说明一下。参考下面接口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> pkg;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Comparable</span> <span class="keyword">extends</span> <span class="title">Mesurable</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> LESS = -<span class="number">1</span>;</div><div class="line">    <span class="keyword">int</span> EQUAL = <span class="number">0</span>;</div><div class="line">    <span class="keyword">int</span> GREATER = <span class="number">1</span>;</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Object o)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以通过调用<strong>ClassVisitor</strong>的6个方法来生成这个接口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.objectweb.asm.Opcodes.ACC_ABSTRACT;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.objectweb.asm.Opcodes.ACC_FINAL;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.objectweb.asm.Opcodes.ACC_INTERFACE;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.objectweb.asm.Opcodes.ACC_PUBLIC;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.objectweb.asm.Opcodes.ACC_STATIC;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.objectweb.asm.Opcodes.V1_5;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.objectweb.asm.ClassWriter;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassGenerator</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ClassWriter cw = <span class="keyword">new</span> ClassWriter(<span class="number">0</span>);</div><div class="line">        cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE, <span class="string">"pkg/Comparable"</span>, <span class="keyword">null</span>, <span class="string">"java/lang/Object"</span>,</div><div class="line">            <span class="keyword">new</span> String[] &#123; <span class="string">"pkg/Mesurable"</span> &#125;);</div><div class="line">        cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, <span class="string">"LESS"</span>, <span class="string">"I"</span>, <span class="keyword">null</span>, <span class="keyword">new</span> Integer(-<span class="number">1</span>)).visitEnd();</div><div class="line">        cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, <span class="string">"EQUAL"</span>, <span class="string">"I"</span>, <span class="keyword">null</span>, <span class="keyword">new</span> Integer(<span class="number">0</span>)).visitEnd();</div><div class="line">        cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, <span class="string">"GREATER"</span>, <span class="string">"I"</span>, <span class="keyword">null</span>, <span class="keyword">new</span> Integer(<span class="number">1</span>)).visitEnd();</div><div class="line">        cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, <span class="string">"compareTo"</span>, <span class="string">"(Ljava/lang/Object;)I"</span>, <span class="keyword">null</span>, <span class="keyword">null</span>).visitEnd();</div><div class="line">        cw.visitEnd();</div><div class="line">        <span class="keyword">byte</span>[] b = cw.toByteArray();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>第一行代码创建了一个ClassWriter实例，该实例将会生成代表class的byte数组。（构造参数会在下一章介绍。）<br>调用visit方法定义class的头信息。<strong>V1_5</strong>参数是一个常量，和其他ASM常量一样，在<strong>Opcode</strong>接口中定义。<br>代码指定了class的JVM版本为1.5。<strong>ACC_XXX</strong>常量标志对应了Java修饰符。<br>这里我们制定了该class是一个接口，有用<strong>public</strong>和<strong>abstract</strong>修饰符（因为该类不可以被实例化）。<br>第三个参数<strong>“pkg/Comparable”</strong>指定了class的名称，使用内部名格式（参照2.1.2章节）。<br>回顾一下，编译后的class，不包含package和import部分，所以所有的的class名称都必须是全名。<br>第四个参数是泛型（参照4.1章）。在这个示例中是<strong>null</strong>，因为接口没有参数化的类型变量。<br>第五个参数是父类，使用内部名格式（接口类隐式继承Object类）。<br>最后一个参数是一个数组表示该类实现的接口，使用内部名格式。</p>
+<p>接下来调用的三个<strong>visiteField</strong>方法是类似的，用于定义接口的三个属性。<br>第一个参数设置了属性相应的修饰符。这里我们指定了该属性的修饰符为<strong>public</strong>、<strong>final</strong>、<strong>static</strong>。<br>第二个参数是属性的名称，和源码中是一样的。第三个参数制定了属性的类型，使用类型描述符的方式。<br>这里指定的属性是int类型的，所以类型描述符是<strong>I</strong>。<br>第四个参数是泛型。在这个示例中是null，因为我们没有使用泛型。<br>最后一个参数是该属性的常量值：这个参数只有在属性是恒定常量的时候才会被使用，即静态final属性。对于其他非静态常量，该参数必须为null。<br>因为这里没有使用注解，所以我们直接调用<strong>visitEnd</strong>方法，放回<strong>FieldVisitor</strong>，即不调用<strong>visitAnnotation</strong>、<strong>visitAttribute</strong>方法。</p>
+<p>调用<strong>visitMethod</strong>方法定义<strong>compareTo</strong>方法。这里第一个参数同样是设置方法的修饰符。<br>第二个参数指定了方法的名称，和源码中的一样。第三个是该方法的描述符。第四个参数对应方法的泛型。在我们的示例中是null，因为定义的方法没有使用泛型。<br>最后一个参数指定了可能被该方法抛出的<strong>exception</strong>数组，使用内部名格式。这里是null，因为该方法不抛出任何异常。<br><strong>visitMethod</strong>方法返回一个MethodVisitor实例（参考图标3.4），可以使用它定义方法的注解、属性和最重要的方法代码。<br>由于本方法不包含注解，并且该方法是abstract的，我们直接调用<strong>visitEnd</strong>方法。<br>最后我们调用<strong>cw</strong>的<strong>visitEnd方法结束该class的声明，并调用</strong>toByteArray**方法把该class输出成一个byte数组。</p>
+<p><strong>使用生成的类</strong></p>
+<p>上面生成的byte数组可以保存到<strong>Comparable.class</strong>文件中，以便后续使用。<br>另外，该数组也可以被ClassLoader动态加载。<br>定义一个ClassLoader的子类，指定它的<strong>defineClass</strong>方法为public:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> Class <span class="title">defineClass</span><span class="params">(String name, <span class="keyword">byte</span>[] b)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> defineClass(name, b, <span class="number">0</span>, b.length);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>生成的class可以通过以下方式被直接加载：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Class c = myClassLoader.defineClass(<span class="string">"pkg.Comparable"</span>, b);</div></pre></td></tr></table></figure>
+<p>另一个方法加载生成的class，需要定义<strong>ClassLoader</strong>的子类，并重写<strong>findClass</strong>方法，动态生成需要的class：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">StubClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Class <span class="title">findClass</span><span class="params">(String name)</span></span></div><div class="line">        <span class="keyword">throws</span> ClassNotFoundException &#123;</div><div class="line">        <span class="keyword">if</span> (name.endsWith(<span class="string">"_Stub"</span>)) &#123;</div><div class="line">            ClassWriter cw = <span class="keyword">new</span> ClassWriter(<span class="number">0</span>);</div><div class="line">            <span class="comment">//...</span></div><div class="line">            <span class="keyword">byte</span>[] b = cw.toByteArray();</div><div class="line">            <span class="keyword">return</span> defineClass(name, b, <span class="number">0</span>, b.length);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.findClass(name);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>现实情况中，如何使用生成的class取决于程序的上下文，已经超出了<strong>ASM API</strong>的介绍范围。<br>如果你写了一个编译器，类生成过程会被抽象语法树驱动来表示编译程序，生成的class会被保存在硬盘上。<br>如果你编写一个动态代理类生成器或者<strong>aspect weaver</strong>（切面织入器），需要使用<strong>ClassLoader</strong>。</p>
+<h4 id="2-2-4-转换生成的class"><a href="#2-2-4-转换生成的class" class="headerlink" title="2.2.4 转换生成的class"></a>2.2.4 转换生成的class</h4><p>至此ClassReader和ClassWriter组件都是被单独使用的。<br><strong>Event</strong>都是由<strong>ClassWriter</strong>自己产生并且直接消费，或者由<strong>ClassReader</strong>自己产生并且直接消费，即通过自定义的<strong>ClassVisitor</strong>实现。<br>当把这些组件整合起来使用的时候，事情就会变得非常有趣。第一步直接由一个<strong>ClassReader</strong>生成event传递给一个<strong>ClassWriter</strong>。<br>结果就是被ClassReader解析的class，被ClassWriter重建了：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">byte</span>[] b1 = ...;</div><div class="line">ClassWriter cw = <span class="keyword">new</span> ClassWriter(<span class="number">0</span>);</div><div class="line">ClassReader cr = <span class="keyword">new</span> ClassReader(b1);</div><div class="line">cr.accept(cw, <span class="number">0</span>);</div><div class="line"><span class="keyword">byte</span>[] b2 = cw.toByteArray(); <span class="comment">// b2 represents the same class as b1</span></div></pre></td></tr></table></figure></p>
+<p>这个例子实际上并不有趣（更加简单的实现方法是直接拷贝byte数组！），但请等等。<br>下一步是介绍在class的读取和写出的过程中使用<strong>ClassVisitor</strong>组件：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">byte</span>[] b1 = ...;</div><div class="line">ClassWriter cw = <span class="keyword">new</span> ClassWriter(<span class="number">0</span>);</div><div class="line"><span class="comment">// cv forwards all events to cw</span></div><div class="line">ClassVisitor cv = <span class="keyword">new</span> ClassVisitor(ASM4, cw) &#123; &#125;;</div><div class="line">ClassReader cr = <span class="keyword">new</span> ClassReader(b1);</div><div class="line">cr.accept(cv, <span class="number">0</span>);</div><div class="line"><span class="keyword">byte</span>[] b2 = cw.toByteArray(); <span class="comment">// b2 represents the same class as b1</span></div></pre></td></tr></table></figure></p>
+<p>上面的代码所对应的结构展示在图表2.6中，组件使用方形表示，event使用箭头表示（垂直方向的时间线作为序列图）。<br><img src="/img/program/asm/ASM-2.2.4-19-2.6.png" alt="图表 2.6 一条转换链"></p>
+<p>结果没有任何改变，因为<strong>ClassVisitor</strong>的event过滤器并没有做任何过滤操作。</p>
+<p>但是现在通过重写一些方法，已经足够过滤一些event了，从而改变一个class。<br>例如，参考下面的<strong>ClassVisitor</strong>子类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChangeVersionAdapter</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ChangeVersionAdapter</span><span class="params">(ClassVisitor cv)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(ASM4, cv);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visit</span><span class="params">(<span class="keyword">int</span> version, <span class="keyword">int</span> access, String name,</span></span></div><div class="line">        String signature, String superName, String[] interfaces) &#123;</div><div class="line">        cv.visit(V1_5, access, name, signature, superName, interfaces);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面的class仅仅重写了<strong>ClassVisitor</strong>的一个方法。<br>其产生的结果是，所有通过调用构造函数传递进来的<strong>ClassVisitor</strong>对象<strong>cv</strong>，在调用了<strong>visit</strong>方法后，都会被修改class的版本号，然后才传递下去。<br>相应的序列图见图表2.7：<br><img src="/img/program/asm/ASM-2.2.4-20-2.7.png" alt="图表 2.7 ChangeVersionAdapter序列图"></p>
+<p>可以通过修改<strong>visit</strong>方法的其他参数来更改class，不仅仅改变class的版本号。<br>例如，可以添加一个接口到该类的接口列表。<br>也可以更改class的名字，但要实现修改class的名字，除了修改<strong>visit</strong>方法的参数，还要做很多其他的调整。<br>事实上，class的名字可能出现在编译类的很多不同地方，所有出现的地方都要修改成class的真实名字。</p>
+<h5 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h5><p>上一部分的修改，仅仅改变了原class的4个字节。<br>然而，在上述代码中，<strong>b1</strong>数组被全部解析并产生了相应的event，用于从头构造<strong>b2</strong>数组，这样效率是非常低的。<br>高效的做法是直接将<strong>b1</strong>数组中不需要作改变的部分直接拷贝到<strong>b2</strong>数组中，对这部分不进行解些和生成event。</p>
+<p><strong>ASM</strong>会自动为方法执行这些优化：</p>
+<ul>
+<li>当<strong>ClassReader</strong>检测到<strong>ClassVisitor</strong>中返回的<strong>MethodVisitor</strong>作为参数传递给一个<strong>ClassWriter</strong>对象，这意味着这个方法没有被修改，并且实际上不应该被应用所见。</li>
+<li>这种情况下，<strong>ClassReader</strong>组件不解些方法的内容，也不生成相应的event，仅仅把表示该方法的byte数组拷贝到ClassWriter中。</li>
+</ul>
+<p>当ClassReader和ClassWriter相互引用对方的时候，该优化会被执行，可以这样设置：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">byte</span>[] b1 = ...</div><div class="line">ClassReader cr = <span class="keyword">new</span> ClassReader(b1);</div><div class="line">ClassWriter cw = <span class="keyword">new</span> ClassWriter(cr, <span class="number">0</span>);</div><div class="line">ChangeVersionAdapter ca = <span class="keyword">new</span> ChangeVersionAdapter(cw);</div><div class="line">cr.accept(ca, <span class="number">0</span>);</div><div class="line"><span class="keyword">byte</span>[] b2 = cw.toByteArray();</div></pre></td></tr></table></figure></p>
+<p>优化过的代码比原本的代码要快2倍，因为<strong>ChangeVersionAdapter</strong>不修改任意方法。<br>对于一边的class转换，修改一些或者所有方法，性能提升比较小，但是仍旧很明显：实际在10%到20%。<br>不幸的是，需要拷贝原class中定义的所有常量到转换的class中。（TODO FIXME 整个一段需要优化范围。）<br>对于添加属性、方法和指令的转换是没有问题的，但是这将产生更大的class文件，相比较未优化的情况，或对于删除或者重命名class中的元素。<br>因此，建议这种优化手段仅在“添加剂”转化中使用。</p>
+<h5 id="使用转换后的class"><a href="#使用转换后的class" class="headerlink" title="使用转换后的class"></a>使用转换后的class</h5><p>在上一个部分，我们介绍了转换后的class <strong>b2</strong> 可以被存储在硬盘上，或者被一个ClassLoader类加载。<br>但是在一个ClassLoader中转换后的class，既能够被本ClassLoader加载。<br>如果你想转换所有ClassLoader中的class，就需要在转换放在<strong>java.lang.instrument</strong>包中定义的<strong>ClassFileTransformer</strong>类中（了解更多信息请阅读该包的文档信息）：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">premain</span><span class="params">(String agentArgs, Instrumentation inst)</span> </span>&#123;</div><div class="line">    inst.addTransformer(<span class="keyword">new</span> ClassFileTransformer() &#123;</div><div class="line">        <span class="keyword">public</span> <span class="keyword">byte</span>[] transform(ClassLoader l, String name, Class c, ProtectionDomain d, <span class="keyword">byte</span>[] b)</div><div class="line">            <span class="keyword">throws</span> IllegalClassFormatException &#123;</div><div class="line">            ClassReader cr = <span class="keyword">new</span> ClassReader(b);</div><div class="line">            ClassWriter cw = <span class="keyword">new</span> ClassWriter(cr, <span class="number">0</span>);</div><div class="line">            ClassVisitor cv = <span class="keyword">new</span> ChangeVersionAdapter(cw);</div><div class="line">            cr.accept(cv, <span class="number">0</span>);</div><div class="line">            <span class="keyword">return</span> cw.toByteArray();</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="2-2-5-删除class的成员"><a href="#2-2-5-删除class的成员" class="headerlink" title="2.2.5 删除class的成员"></a>2.2.5 删除class的成员</h4><p>上一部分改变类版本的方法，可以用在<strong>ClassVisitor</strong>的其他方法上。<br>例如修改方法中代表修饰符或者名称的参数，就可以修改相应方法或者属性的修饰符或者名称。<br>此外，除了转发修改后方法参数，也可选择不转发该调用。<br>产生的效果是，相应那个的class成员会被删除。<br>例如，下面的class适配器，删除了该类的内部类和外部类信息，以及编译该类的源文件名称信息<br>（生成的class仍然保留了完整的功能，因为删除的元素仅用于调试）。<br>这是通过不转发相应的<strong>visit</strong>方法实现的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RemoveDebugAdapter</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RemoveDebugAdapter</span><span class="params">(ClassVisitor cv)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(ASM4, cv);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitSource</span><span class="params">(String source, String debug)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitOuterClass</span><span class="params">(String owner, String name, String desc)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitInnerClass</span><span class="params">(String name, String outerName,</span></span></div><div class="line">            String innerName, <span class="keyword">int</span> access) &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种策略并不适用于属性和方法，因为<strong>visitField</strong>和<strong>visitMethod</strong>方法必须返回一个结果。<br>为了删除属性或者方法，就不能转发方法调用，直接返回null就可以了。<br>例如，下面的class适配器，通过指定方法的名称和描述符（名称不足以标识唯一一个方法，因为一个类可以包含很多名称相同，但参数类型不同的方法）删除了一个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RemoveMethodAdapter</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String mName;</div><div class="line">    <span class="keyword">private</span> String mDesc;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RemoveMethodAdapter</span><span class="params">(</span></span></div><div class="line">            ClassVisitor cv, String mName, String mDesc) &#123;</div><div class="line">        <span class="keyword">super</span>(ASM4, cv);</div><div class="line">        <span class="keyword">this</span>.mName = mName;</div><div class="line">        <span class="keyword">this</span>.mDesc = mDesc;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> MethodVisitor <span class="title">visitMethod</span><span class="params">(<span class="keyword">int</span> access, String name,</span></span></div><div class="line">            String desc, String signature, String[] exceptions) &#123;</div><div class="line">        <span class="keyword">if</span> (name.equals(mName) &amp;&amp; desc.equals(mDesc)) &#123;</div><div class="line">            <span class="comment">// do not delegate to next visitor -&gt; this removes the method</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> cv.visitMethod(access, name, desc, signature, exceptions);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="2-2-6-添加class成员"><a href="#2-2-6-添加class成员" class="headerlink" title="2.2.6 添加class成员"></a>2.2.6 添加class成员</h4><p>相比于减少转发你收到的调用，你可以多几次转发，来增加class的成员。<br>新的调用可以在原方法调用中的任何地方调用，需要确保不同<strong>visitXxx</strong>方法按照顺序被调用（参照章节2.2.1）：<br>例如，如果你想在class中新增一个属性，你需要在原本的方法调用中插入一个<strong>visitField</strong>方法调用，并且在class适配器中的访问方法中插入该调用。<br>不可以在<strong>visit</strong>方法中插入<strong>visitField</strong>方法，这样将会导致<strong>visitField</strong>方法在<strong>visitSource</strong>、<strong>visitOuterClass</strong>、<strong>visitAnnotation</strong>、<strong>visitAttribute</strong>这些方法之前被调用，这是不合法的。<br>同样，也不能在<strong>visitSource</strong>、<strong>visitOuterClass</strong>、<strong>visitAnnotation</strong>、<strong>visitAttribute</strong>这些方法中调用<strong>visitField</strong>方法。<br>只可以在<strong>visitInnerClass</strong>、<strong>visitField</strong>、<strong>visitMethod</strong>、<strong>visitEnd</strong>方法中调用。</p>
+<p>如果将新的调用方法添加在<strong>visitEnd</strong>方法中，这个属性肯定会被添加（除非你设置了其他条件来执行该调用），因为<strong>visitEnd</strong>方法总会被调用。<br>如果将调用放在<strong>visitField</strong>或<strong>visitMethod</strong>方法中，会添加几个属性：原class中每一个属性和方法都会调用该方法并增加一个属性。<br>这两种解决方案都是有意义的；使用那种取决于场景需求。例如你可以增加一个单一的计数器属性来统计对象的调用次数，或者每个方法的计数器来单独统计每个方法的调用次数。</p>
+<blockquote>
+<p><strong>备注</strong><br>现实中真正正确的解决方案是在<strong>visitEnd</strong>方法中调用增加新成员的方法。<br>一个类不能包含重复的成员，确保新增成员唯一性，需要和所有的已有成员做比较，这只能在所有的已有成员都被访问过后才可以做比较，即在<strong>visitEnd</strong>方法中比较。<br>这是一个强约束。使用生成的名称可能和程序员使用的命名方式不同，例如在实践中使用’<strong>_counter$</strong>‘后者’<strong>_4B7F</strong>‘这种命名可以防止类成员重复，这样就不必在<strong>visitEnd</strong>方法中调用了。<br>需要注意的是，正如第一章介绍的，<strong>Tree API</strong>的调用是没有限制的：在类转换的过程中可以使用<strong>API</strong>添加类成员。</p>
+</blockquote>
+<p>为了说明上面的讨论，下面有一个class适配器，会在class中添加一个属性，出发该属性已经在该class中：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AddFieldAdapter</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> fAcc;</div><div class="line">    <span class="keyword">private</span> String fName;</div><div class="line">    <span class="keyword">private</span> String fDesc;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isFieldPresent;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AddFieldAdapter</span><span class="params">(ClassVisitor cv, <span class="keyword">int</span> fAcc, String fName,</span></span></div><div class="line">            String fDesc) &#123;</div><div class="line">        <span class="keyword">super</span>(ASM4, cv);</div><div class="line">        <span class="keyword">this</span>.fAcc = fAcc;</div><div class="line">        <span class="keyword">this</span>.fName = fName;</div><div class="line">        <span class="keyword">this</span>.fDesc = fDesc;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> FieldVisitor <span class="title">visitField</span><span class="params">(<span class="keyword">int</span> access, String name, String desc,</span></span></div><div class="line">            String signature, Object value) &#123;</div><div class="line">        <span class="keyword">if</span> (name.equals(fName)) &#123;</div><div class="line">            isFieldPresent = <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> cv.visitField(access, name, desc, signature, value);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitEnd</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!isFieldPresent) &#123;</div><div class="line">            FieldVisitor fv = cv.visitField(fAcc, fName, fDesc, <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">            <span class="keyword">if</span> (fv != <span class="keyword">null</span>) &#123;</div><div class="line">                fv.visitEnd();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        cv.visitEnd();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>属性在<strong>visitEnd</strong>方法中添加。重写了<strong>visitField</strong>方法，并不是为了修改或删除原有的属性，而是检查需要添加的属性是否已经存在。<br>注意一下，<strong>visitEnd</strong>方法中，在调用<strong>fv.visitEnd()</strong>方法前，调用的<strong>fv != null </strong>判断语句：原因之前章节有介绍，一个class的visitor调用<strong>visitField</strong>方法，可能返回<strong>null</strong>。</p>
+<h4 id="2-2-7-转换链路"><a href="#2-2-7-转换链路" class="headerlink" title="2.2.7 转换链路"></a>2.2.7 转换链路</h4><p>至此为止，我们已经了解了由<strong>ClassReader</strong>、class适配器和<strong>ClassWriter</strong>组成的转换链。<br>当然也可以由多个class适配器组成更加复杂的转换链，。<br>链路中的几个适配器可以撰写几个不同的类转换器，来实现复杂的转换工作。<br>需要知道的是，转换链不必是线性的。<br>可以实现一个<strong>ClassVisitor</strong>，同时转发它所接受的所有方法调用到不同的<strong>ClassVisitor</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultiClassAdapter</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> </span>&#123;</div><div class="line">    <span class="keyword">protected</span> ClassVisitor[] cvs;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MultiClassAdapter</span><span class="params">(ClassVisitor[] cvs)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(ASM4);</div><div class="line">        <span class="keyword">this</span>.cvs = cvs;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visit</span><span class="params">(<span class="keyword">int</span> version, <span class="keyword">int</span> access, String name,</span></span></div><div class="line">            String signature, String superName, String[] interfaces) &#123;</div><div class="line">        <span class="keyword">for</span> (ClassVisitor cv : cvs) &#123;</div><div class="line">            cv.visit(version, access, name, signature, superName, interfaces);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对等的多个class适配器可以委托给同一个<strong>ClassVisitor</strong>（这需要一些预防措施，比如<strong>ClassVisitor</strong>的<strong>visit</strong>方法和<strong>visitEnd</strong>方法只能被调用一次）。<br>因此一个像图标2.8展示的转换链才是完全有可能的。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Program/">Program</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Manual/">Manual</a><a href="/tags/ASM/">ASM</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/09/18/asm/4/Manual_ASM_2.3_Classes_Tools/" title="2.3 ASM-类-工具类">
+  <strong>上一篇：</strong><br/>
+  <span>
+  2.3 ASM-类-工具类</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/09/12/program/spring/Manual_Spring_MVC_Resources_Cache-20160912/"  title="Spring MVC配置响应静态文件请求">
+ <strong>下一篇：</strong><br/> 
+ <span>Spring MVC配置响应静态文件请求
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/09/15/asm/4/Manual_ASM_2.2_Classes_Interfaces_And_Components/" data-title="2.2 ASM-类-接口和组件" data-url="http://www.innereye.cn/2016/09/15/asm/4/Manual_ASM_2.2_Classes_Interfaces_And_Components/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-接口和组件"><span class="toc-number">1.</span> <span class="toc-text">2.2 接口和组件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-介绍"><span class="toc-number">1.1.</span> <span class="toc-text">2.2.1 介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-解析Class"><span class="toc-number">1.2.</span> <span class="toc-text">2.2.2 解析Class</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-生成Class"><span class="toc-number">1.3.</span> <span class="toc-text">2.2.3 生成Class</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-4-转换生成的class"><span class="toc-number">1.4.</span> <span class="toc-text">2.2.4 转换生成的class</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#优化"><span class="toc-number">1.4.1.</span> <span class="toc-text">优化</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#使用转换后的class"><span class="toc-number">1.4.2.</span> <span class="toc-text">使用转换后的class</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-5-删除class的成员"><span class="toc-number">1.5.</span> <span class="toc-text">2.2.5 删除class的成员</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-6-添加class成员"><span class="toc-number">1.6.</span> <span class="toc-text">2.2.6 添加class成员</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-7-转换链路"><span class="toc-number">1.7.</span> <span class="toc-text">2.2.7 转换链路</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

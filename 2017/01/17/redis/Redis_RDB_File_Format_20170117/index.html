@@ -1,0 +1,1166 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Redis持久化文件RDB的格式解析 | BaiFan</title>
+    <meta name="description" id="description" content="Redis持久化文件RDB的格式解析 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="Redis RDB file format.介绍第7版的RDB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis持久化文件RDB的格式解析">
+<meta property="og:url" content="http://www.innereye.cn/2017/01/17/redis/Redis_RDB_File_Format_20170117/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="Redis RDB file format.介绍第7版的RDB">
+<meta property="og:updated_time" content="2017-02-05T14:15:42.046Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis持久化文件RDB的格式解析">
+<meta name="twitter:description" content="Redis RDB file format.介绍第7版的RDB">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/01/17/redis/Redis_RDB_File_Format_20170117/" title="Redis持久化文件RDB的格式解析" itemprop="url">Redis持久化文件RDB的格式解析</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2017-01-17T14:04:55.000Z" itemprop="datePublished"> 发表于 2017-01-17</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-RDB文件格式"><span class="toc-number">1.</span> <span class="toc-text">Redis RDB文件格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解析RBD文件的高级算法"><span class="toc-number">2.</span> <span class="toc-text">解析RBD文件的高级算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件魔数-Magic-Number"><span class="toc-number">3.</span> <span class="toc-text">文件魔数 Magic Number</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB版本号"><span class="toc-number">4.</span> <span class="toc-text">RDB版本号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#操作码"><span class="toc-number">5.</span> <span class="toc-text">操作码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库选择器"><span class="toc-number">6.</span> <span class="toc-text">数据库选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resizedb信息"><span class="toc-number">7.</span> <span class="toc-text">Resizedb信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助字段"><span class="toc-number">8.</span> <span class="toc-text">辅助字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KV键值对"><span class="toc-number">9.</span> <span class="toc-text">KV键值对</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#失效时间戳"><span class="toc-number">9.1.</span> <span class="toc-text">失效时间戳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值类型"><span class="toc-number">9.2.</span> <span class="toc-text">值类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#键-Key"><span class="toc-number">9.3.</span> <span class="toc-text">键-Key</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值-Value"><span class="toc-number">9.4.</span> <span class="toc-text">值-Value</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码"><span class="toc-number">10.</span> <span class="toc-text">编码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#长度编码"><span class="toc-number">10.1.</span> <span class="toc-text">长度编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String-Encoding"><span class="toc-number">10.2.</span> <span class="toc-text">String Encoding</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Length-Prefixed-String"><span class="toc-number">10.2.1.</span> <span class="toc-text">Length Prefixed String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Integer-As-String"><span class="toc-number">10.2.2.</span> <span class="toc-text">Integer As String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Compressed-Strings"><span class="toc-number">10.2.3.</span> <span class="toc-text">Compressed Strings</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#List-Encoding"><span class="toc-number">10.3.</span> <span class="toc-text">List Encoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Set-Encoding"><span class="toc-number">10.4.</span> <span class="toc-text">Set Encoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Sorted-Set-Encoding"><span class="toc-number">10.5.</span> <span class="toc-text">Sorted Set Encoding</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>Redis RDB file format.<br>介绍第7版的RDB<br><a id="more"></a></p>
+<h3 id="Redis-RDB文件格式"><a href="#Redis-RDB文件格式" class="headerlink" title="Redis RDB文件格式"></a>Redis RDB文件格式</h3><p>Redis的RDB文件是对内存存储的一种表示。这个二进制文件足以完全恢复Redis当时的运行状态。<br>RDB文件格式针对快速读写进行了优化。LZF压缩被用于减小文件大小。<br>通常，对象的长度会作为该条记录的前缀，所以在读取对象前，你已经精确地知道了需要分配多少内存。<br>优化文件的快速读写，意味着数据在磁盘中的格式，尽可能的和内存中展示的一样。<br>这就是RDB文件采用的方法。<br>因此，你可以在不了解Redis内存数据结构的前提下，解析RDB文件。</p>
+<h3 id="解析RBD文件的高级算法"><a href="#解析RBD文件的高级算法" class="headerlink" title="解析RBD文件的高级算法"></a>解析RBD文件的高级算法</h3><p>整体看，RDB的文件结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">----------------------------#</div><div class="line">52 45 44 49 53              # 文件魔术 字符串&quot;REDIS&quot;</div><div class="line">30 30 30 33                 # RDB的版本号，使用ASCII字符串表示： &quot;0003&quot; = 3</div><div class="line">----------------------------</div><div class="line">FA                          # 辅助字段</div><div class="line">$string-encoded-key         # 可能包含任意元数据信息</div><div class="line">$string-encoded-value       # 例如Redis的版本、创建时间、已使用的内存等等...</div><div class="line">----------------------------</div><div class="line">FE 00                       # 指明数据库. db = 00</div><div class="line">FB                          # 指明resizedb属性</div><div class="line">$length-encoded-int         # 相应Hash表的大小</div><div class="line">$length-encoded-int         # 相应带失效时间的Hash表大小</div><div class="line">----------------------------# 键值对统计</div><div class="line">FD $unsigned-int            # &quot;秒级超时&quot;, 紧挨着4个字节组成的无符号整数</div><div class="line">$value-type                 # 1字节指明数据的编码方式</div><div class="line">$string-encoded-key         # KEY-键，使用Redis字符串编码方式</div><div class="line">$encoded-value              # VALUE-值，使用$value-type指明的编码方式</div><div class="line">----------------------------</div><div class="line">FC $unsigned long           # &quot;毫秒级超时&quot;, 紧挨着8个字节组成的无符号长整数</div><div class="line">$value-type                 # 1字节指明数据的编码方式</div><div class="line">$string-encoded-key         # KEY-键，使用Redis字符串编码方式</div><div class="line">$encoded-value              # VALUE-值，使用$value-type指明的编码方式</div><div class="line">----------------------------</div><div class="line">$value-type                 # 没有失效时间的KV键值对</div><div class="line">$string-encoded-key</div><div class="line">$encoded-value</div><div class="line">----------------------------</div><div class="line">FE $length-encoding         # 上一个DB的信息结束，下一个DB的信息。</div><div class="line">----------------------------</div><div class="line">...                         # 其他键值对、DB信息...</div><div class="line"></div><div class="line">FF                          ## RDB文件结束标识</div><div class="line">8-byte-checksum             ## 8字节的CRC64表示的文件校验和</div></pre></td></tr></table></figure>
+<h3 id="文件魔数-Magic-Number"><a href="#文件魔数-Magic-Number" class="headerlink" title="文件魔数 Magic Number"></a>文件魔数 Magic Number</h3><p>RDB文件以字符串“REDIS”作为开始。<br>这是一个快速完整性校验，用于判断是否在处理一个RDB文件。</p>
+<blockquote>
+<p>52 45 44 49 53  # “REDIS”</p>
+</blockquote>
+<h3 id="RDB版本号"><a href="#RDB版本号" class="headerlink" title="RDB版本号"></a>RDB版本号</h3><p>接下来的4个字节存放了RDB格式的版本号。<br>这4个字节是ASCII码（）的值，然后使用字符串转整型的方式，将之转换成一个整数。</p>
+<blockquote>
+<p>30 30 30 33 # “0003” =&gt; Version 3<br>在ASCII码中’0’ = 十进制48 = 十六禁制30。</p>
+</blockquote>
+<p><strong>ASCII码表</strong></p>
+<table>
+<thead>
+<tr>
+<th>十进制</th>
+<th>ASCII码</th>
+<th>十进制</th>
+<th>ASCII码</th>
+<th>十进制</th>
+<th>ASCII码</th>
+<th>十进制</th>
+<th>ASCII码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>NUT</td>
+<td>32</td>
+<td>(space)</td>
+<td>64</td>
+<td>@</td>
+<td>96</td>
+<td>、</td>
+</tr>
+<tr>
+<td>1</td>
+<td>SOH</td>
+<td>33</td>
+<td>!</td>
+<td>65</td>
+<td>A</td>
+<td>97</td>
+<td>a</td>
+</tr>
+<tr>
+<td>2</td>
+<td>STX</td>
+<td>34</td>
+<td>“</td>
+<td>66</td>
+<td>B</td>
+<td>98</td>
+<td>b</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ETX</td>
+<td>35</td>
+<td>#</td>
+<td>67</td>
+<td>C</td>
+<td>99</td>
+<td>c</td>
+</tr>
+<tr>
+<td>4</td>
+<td>EOT</td>
+<td>36</td>
+<td>$</td>
+<td>68</td>
+<td>D</td>
+<td>100</td>
+<td>d</td>
+</tr>
+<tr>
+<td>5</td>
+<td>ENQ</td>
+<td>37</td>
+<td>%</td>
+<td>69</td>
+<td>E</td>
+<td>101</td>
+<td>e</td>
+</tr>
+<tr>
+<td>6</td>
+<td>ACK</td>
+<td>38</td>
+<td>&amp;</td>
+<td>70</td>
+<td>F</td>
+<td>102</td>
+<td>f</td>
+</tr>
+<tr>
+<td>7</td>
+<td>BEL</td>
+<td>39</td>
+<td>,</td>
+<td>71</td>
+<td>G</td>
+<td>103</td>
+<td>g</td>
+</tr>
+<tr>
+<td>8</td>
+<td>BS</td>
+<td>40</td>
+<td>(</td>
+<td>72</td>
+<td>H</td>
+<td>104</td>
+<td>h</td>
+</tr>
+<tr>
+<td>9</td>
+<td>HT</td>
+<td>41</td>
+<td>)</td>
+<td>73</td>
+<td>I</td>
+<td>105</td>
+<td>i</td>
+</tr>
+<tr>
+<td>10</td>
+<td>LF</td>
+<td>42</td>
+<td>*</td>
+<td>74</td>
+<td>J</td>
+<td>106</td>
+<td>j</td>
+</tr>
+<tr>
+<td>11</td>
+<td>VT</td>
+<td>43</td>
+<td>+</td>
+<td>75</td>
+<td>K</td>
+<td>107</td>
+<td>k</td>
+</tr>
+<tr>
+<td>12</td>
+<td>FF</td>
+<td>44</td>
+<td>,</td>
+<td>76</td>
+<td>L</td>
+<td>108</td>
+<td>l</td>
+</tr>
+<tr>
+<td>13</td>
+<td>CR</td>
+<td>45</td>
+<td>-</td>
+<td>77</td>
+<td>M</td>
+<td>109</td>
+<td>m</td>
+</tr>
+<tr>
+<td>14</td>
+<td>SO</td>
+<td>46</td>
+<td>.</td>
+<td>78</td>
+<td>N</td>
+<td>110</td>
+<td>n</td>
+</tr>
+<tr>
+<td>15</td>
+<td>SI</td>
+<td>47</td>
+<td>/</td>
+<td>79</td>
+<td>O</td>
+<td>111</td>
+<td>o</td>
+</tr>
+<tr>
+<td>16</td>
+<td>DLE</td>
+<td>48</td>
+<td>0</td>
+<td>80</td>
+<td>P</td>
+<td>112</td>
+<td>p</td>
+</tr>
+<tr>
+<td>17</td>
+<td>DCI</td>
+<td>49</td>
+<td>1</td>
+<td>81</td>
+<td>Q</td>
+<td>113</td>
+<td>q</td>
+</tr>
+<tr>
+<td>18</td>
+<td>DC2</td>
+<td>50</td>
+<td>2</td>
+<td>82</td>
+<td>R</td>
+<td>114</td>
+<td>r</td>
+</tr>
+<tr>
+<td>19</td>
+<td>DC3</td>
+<td>51</td>
+<td>3</td>
+<td>83</td>
+<td>S</td>
+<td>115</td>
+<td>s</td>
+</tr>
+<tr>
+<td>20</td>
+<td>DC4</td>
+<td>52</td>
+<td>4</td>
+<td>84</td>
+<td>T</td>
+<td>116</td>
+<td>t</td>
+</tr>
+<tr>
+<td>21</td>
+<td>NAK</td>
+<td>53</td>
+<td>5</td>
+<td>85</td>
+<td>U</td>
+<td>117</td>
+<td>u</td>
+</tr>
+<tr>
+<td>22</td>
+<td>SYN</td>
+<td>54</td>
+<td>6</td>
+<td>86</td>
+<td>V</td>
+<td>118</td>
+<td>v</td>
+</tr>
+<tr>
+<td>23</td>
+<td>TB</td>
+<td>55</td>
+<td>7</td>
+<td>87</td>
+<td>W</td>
+<td>119</td>
+<td>w</td>
+</tr>
+<tr>
+<td>24</td>
+<td>CAN</td>
+<td>56</td>
+<td>8</td>
+<td>88</td>
+<td>X</td>
+<td>120</td>
+<td>x</td>
+</tr>
+<tr>
+<td>25</td>
+<td>EM</td>
+<td>57</td>
+<td>9</td>
+<td>89</td>
+<td>Y</td>
+<td>121</td>
+<td>y</td>
+</tr>
+<tr>
+<td>26</td>
+<td>SUB</td>
+<td>58</td>
+<td>:</td>
+<td>90</td>
+<td>Z</td>
+<td>122</td>
+<td>z</td>
+</tr>
+<tr>
+<td>27</td>
+<td>ESC</td>
+<td>59</td>
+<td>;</td>
+<td>91</td>
+<td>[</td>
+<td>123</td>
+<td>{</td>
+</tr>
+<tr>
+<td>28</td>
+<td>FS</td>
+<td>60</td>
+<td>&lt;</td>
+<td>92</td>
+<td>/</td>
+<td>124</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>29</td>
+<td>GS</td>
+<td>61</td>
+<td>=</td>
+<td>93</td>
+<td>]</td>
+<td>125</td>
+<td>}</td>
+</tr>
+<tr>
+<td>30</td>
+<td>RS</td>
+<td>62</td>
+<td>&gt;</td>
+<td>94</td>
+<td>^</td>
+<td>126</td>
+<td>`</td>
+</tr>
+<tr>
+<td>31</td>
+<td>US</td>
+<td>63</td>
+<td>?</td>
+<td>95</td>
+<td>_</td>
+<td>127</td>
+<td>DEL</td>
+</tr>
+</tbody>
+</table>
+<h3 id="操作码"><a href="#操作码" class="headerlink" title="操作码"></a>操作码</h3><p>在初始化的头部后，每个部分都由一个特殊操作码引入。可用的操作码如下：</p>
+<table>
+<thead>
+<tr>
+<th>Byte</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0xFF</td>
+<td>EOF</td>
+<td>RDB文件的结尾</td>
+</tr>
+<tr>
+<td>0xFE</td>
+<td>SELECTDB</td>
+<td>数据库选择器</td>
+</tr>
+<tr>
+<td>0xFD</td>
+<td>EXPIRETIME</td>
+<td>秒级别的失效时间, 参照下面的<strong><a href="#Key失效时间戳">Key失效时间戳</a></strong>介绍</td>
+</tr>
+<tr>
+<td>0xFC</td>
+<td>EXPIRETIMEMS</td>
+<td>毫秒级别的失效时间, 参照下面的<strong><a href="#Key失效时间戳">Key失效时间戳</a></strong>介绍</td>
+</tr>
+<tr>
+<td>0xFB</td>
+<td>RESIZEDB</td>
+<td>主键值空间和失效键值的哈希表大小。参照下面的<strong><a href="#Resizedb信息">Resizedb信息</a></strong>介绍</td>
+</tr>
+<tr>
+<td>0xFA</td>
+<td>AUX</td>
+<td>辅助字段。任意键值对，参照下面的<strong><a href="#辅助字段">辅助字段</a></strong>介绍</td>
+</tr>
+</tbody>
+</table>
+<h3 id="数据库选择器"><a href="#数据库选择器" class="headerlink" title="数据库选择器"></a>数据库选择器</h3><p>一个Redis实例可能有多个数据库。<br>一个字节<strong>0xFE</strong>用于标识数据库选择器部分的开始。<br>在该字节后，一个变长的字段表示数据库的索引值。<br>了解如何读取该数据库索引值，请参照<a href="#长度编码">长度编码</a>。</p>
+<h3 id="Resizedb信息"><a href="#Resizedb信息" class="headerlink" title="Resizedb信息"></a>Resizedb信息</h3><p>这个操作码是RDB版本7引入的。<br>这部分包含两个编码后的值，用于加速RDB的加载，避免在加载过程中额外的调整hash空间(resize)和rehash操作。<br>在操作码之后的两个值是：</p>
+<ol>
+<li>数据库的哈希表大小。</li>
+<li>失效哈希表的大小。</li>
+</ol>
+<h3 id="辅助字段"><a href="#辅助字段" class="headerlink" title="辅助字段"></a>辅助字段</h3><p>这个操作码是RDB版本7引入的。<br>操作码后是两个Redis字符串，表示设置的KV键值对。<br>未知的字段会被解析器忽略。</p>
+<p>目前实现的配置有：</p>
+<ul>
+<li><strong>redis-ver</strong>：Redis的版本号</li>
+<li><strong>redis-bits</strong>：输出该RDB文件的操作系统位架构，32或者64</li>
+<li><strong>ctime</strong>：该RDB文件的创建时间</li>
+<li><strong>used-mem</strong>：输出该RDB文件的Redis使用的内存大小</li>
+</ul>
+<h3 id="KV键值对"><a href="#KV键值对" class="headerlink" title="KV键值对"></a>KV键值对</h3><p>在数据库选择器信息后，这个文件包含了一系列的KV键值对序列。<br>每个KV键值对由4部分组成：</p>
+<ol>
+<li><strong>Expiry Time</strong>：失效时间戳。这个字段是可选的。</li>
+<li><strong>Value Type</strong>：一个字节的标识符，指明Value的类型。</li>
+<li><strong>Key</strong>：使用Redis的<strong>String Encoding</strong>。参照<a href="#String Encoding">String Encoding</a>部分。</li>
+<li><strong>Value</strong>：编码方式根据<a href="值类型">Value Type</a>字段决定。参照<a href="#编码">编码</a>部分。</li>
+</ol>
+<h4 id="失效时间戳"><a href="#失效时间戳" class="headerlink" title="失效时间戳"></a>失效时间戳</h4><p>该部分由一个字节标识开始，该表示可以是以下两种之一：</p>
+<ul>
+<li><strong>0xFD</strong>：该标识表示，失效时间以秒为单位。接下来的4个字节组成一个无符号的整型，表示Unix时间戳。</li>
+<li><strong>0xFC</strong>：该标识表示，失效时间以毫秒为单位。接下来的8个字节组成一个无符号的长整型，表示Unix时间戳。</li>
+</ul>
+<p>在导入过程中，如果key失效了，必须被忽略掉，即不加载。</p>
+<h4 id="值类型"><a href="#值类型" class="headerlink" title="值类型"></a>值类型</h4><p>一个字节来表示value使用的编码方式。</p>
+<ul>
+<li><strong>0</strong> = <a href="#String Encoding">String Encoding</a></li>
+<li><strong>1</strong> = <a href="#List Encoding">List Encoding</a></li>
+<li><strong>2</strong> = <a href="#Set Encoding">Set Encoding</a></li>
+<li><strong>3</strong> = <a href="#Sorted Set Encoding">Sorted Set Encoding</a></li>
+<li><strong>4</strong> = <a href="#Hash Encoding">Hash Encoding</a></li>
+<li><strong>9</strong> = <a href="#Zipmap Encoding">Zipmap Encoding</a></li>
+<li><strong>10</strong> = <a href="#Ziplist Encoding">Ziplist Encoding</a></li>
+<li><strong>11</strong> = <a href="#Intset Encoding">Intset Encoding</a></li>
+<li><strong>12</strong> = <a href="#Sorted Set in Ziplist Encoding">Sorted Set in Ziplist Encoding</a></li>
+<li><strong>13</strong> = <a href="#Hashmap in Ziplist Encoding">Hashmap in Ziplist Encoding</a>(RDB版本4引入)</li>
+<li><strong>14</strong> = <a href="#List in Quicklist encoding">List in Quicklist encoding</a> (RDB版本7引入)</li>
+</ul>
+<h4 id="键-Key"><a href="#键-Key" class="headerlink" title="键-Key"></a>键-Key</h4><p>Key被当作一个Redis字符串进行编码。参照<a href="#String Encoding">String Encoding</a>部分，了解key是如何编码的。</p>
+<h4 id="值-Value"><a href="#值-Value" class="headerlink" title="值-Value"></a>值-Value</h4><p>值的编码方式根据<a href="值类型">Value Type</a>字段决定。参照<a href="#编码">编码</a>部分。</p>
+<h3 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h3><h4 id="长度编码"><a href="#长度编码" class="headerlink" title="长度编码"></a>长度编码</h4><p>长度编码用于存放，在流中下一个对象的长度。<br>长度编码是一个变长的字节编码，目的是尽可能的使用少量的字节。<br>长度编码的工作原理：从流中读取一个字节，比较两个最高有效比特（bit）位：</p>
+<table>
+<thead>
+<tr>
+<th>比特</th>
+<th>如何解析</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00</td>
+<td>接下来的6个bit表示长度</td>
+</tr>
+<tr>
+<td>01</td>
+<td>接下来的6个bit，加上再读取一个字节（即8bit），组成的14 bit表示长度。</td>
+</tr>
+<tr>
+<td>10</td>
+<td>忽略该字节剩下的6个bit。再从数据流中读取4个字节，表示长度。</td>
+</tr>
+<tr>
+<td>11</td>
+<td>接下来读取的对象使用了特殊编码。该字节剩余的6个bit表示编码格式。可能存放整数型或者字符串，参照<a href="#String Encoding">String Encoding</a>。</td>
+</tr>
+</tbody>
+</table>
+<p>结论：</p>
+<ul>
+<li>整数0-63（2^6-1）可以存放在1个字节中。</li>
+<li>整数64-16383（2^14-1）可以存放在2个字节中。</li>
+<li>整数16383-(2^32-1）可以存放在4个字节中。</li>
+</ul>
+<h4 id="String-Encoding"><a href="#String-Encoding" class="headerlink" title="String Encoding"></a>String Encoding</h4><p>Redis字符串是二进制安全-这意味着你可以存放任意数据。<br>字符串没有任何的特殊字符串作为结尾标记。<br>最好将Redis的字符串看作一个字节数组。</p>
+<p>Redis有三种String类型：</p>
+<ul>
+<li><a href="#Length Prefixed String">长度作为前缀的字符串（Length Prefixed String）</a>。</li>
+<li><a href="#Integer As String">一个8bit、16bit或者64bit所表示的整数（Integer As String）</a>。</li>
+<li><a href="#Compressed Strings">使用LZF压缩的字符串（Compressed Strings）</a>。</li>
+</ul>
+<h5 id="Length-Prefixed-String"><a href="#Length-Prefixed-String" class="headerlink" title="Length Prefixed String"></a>Length Prefixed String</h5><p>长度作为前缀的字符串，格式非常简单，首先,字符串的字节长度使用<a href="#长度编码">长度编码</a><br>之后存放的就是该字符串的原始字节数组。</p>
+<h5 id="Integer-As-String"><a href="#Integer-As-String" class="headerlink" title="Integer As String"></a>Integer As String</h5><p>首先按照<a href="#长度编码">长度编码</a>读取，开始的两个bit是<strong>11(二进制)</strong>。<br>在这种情况下，剩下的6个字节值的如果情况：</p>
+<ul>
+<li><strong>0</strong>，表示接下来是一个8bit的整数。</li>
+<li><strong>1</strong>，表示接下来是一个16bit的整数。</li>
+<li><strong>2</strong>，表示接下来是一个32bit的整数。</li>
+</ul>
+<h5 id="Compressed-Strings"><a href="#Compressed-Strings" class="headerlink" title="Compressed Strings"></a>Compressed Strings</h5><p>首先阅读<a href="#长度编码">长度编码</a>章节，特别是开始的两个bit是<strong>11(二进制)</strong>的时候。<br>在这种情况下，读取剩下的6个bit值。如果这6bit的值是<strong>3</strong>，则表示接下来是一个压缩的字符串。</p>
+<p>压缩字符串的读取方式如下：</p>
+<ul>
+<li>从数据流中按照<a href="#长度编码">长度编码</a>读取压缩字符串的长度<strong>clen</strong>。</li>
+<li>从数据流中按照<a href="#长度编码">长度编码</a>读取未压缩字符串的长度。</li>
+<li>从数据流中读取接下来<strong>clen</strong>长的byte。</li>
+<li>最后，这些byte使用LZF算法解压缩。</li>
+</ul>
+<h4 id="List-Encoding"><a href="#List-Encoding" class="headerlink" title="List Encoding"></a>List Encoding</h4><p>一个Redis的List使用一系列字符串表示。</p>
+<ul>
+<li>首先，列表的大小<strong>size</strong>，使用<a href="#长度编码">长度编码</a>从数据流中读取。</li>
+<li>接着，<strong>size</strong>个字符串使用<a href="#String Encoding">String Encoding</a>方式读取。</li>
+<li>然后这个列表使用这些字符串重新创建。</li>
+</ul>
+<h4 id="Set-Encoding"><a href="#Set-Encoding" class="headerlink" title="Set Encoding"></a>Set Encoding</h4><p>set的编码方式和<a href="#List Encoding">list</a>一模一样。</p>
+<h4 id="Sorted-Set-Encoding"><a href="#Sorted-Set-Encoding" class="headerlink" title="Sorted Set Encoding"></a>Sorted Set Encoding</h4><ol>
+<li>首先，使用<a href="#长度编码">长度编码</a>从数据流中读取Sorted Set的大小<strong>size</strong>。</li>
+<li>然后，从数据流中读取<strong>size</strong>个值（value）、分数（score）组。</li>
+<li>值使用<a href="#String Encoding">String Encoding</a>。</li>
+<li>下一个byte执行压缩后分数(score)的长度（一个无符号整数）。这个byte有3个值具备特殊含义。<ul>
+<li><strong>253</strong>：不是一个整数，不需要读取额外的byte。</li>
+<li><strong>254</strong>：正无穷大，不需要读取额外的byte。</li>
+<li><strong>255</strong>：负无穷下，不需要读取额外的byte。</li>
+</ul>
+</li>
+<li>从流中读取相应数量的byte，分值使用ASCII编码表示的float，使用String转换float的方式获取相应的浮点值。</li>
+</ol>
+<blockquote>
+<p>注意：由于分值的精度可能失真。Redis使用双精度存放该分值。</p>
+<p>注意：不能确保读取到的组合是有序的。</p>
+</blockquote>
+<p>示例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">04</div><div class="line">01 63 12 34 2E 30 31 39 39 39 39 39 39 39 39 39 39 39 39 39 36</div><div class="line">01 64 FE</div><div class="line">01 61 12 33 2E 31 38 39 39 39 39 39 39 39 39 39 39 39 39 39 39</div><div class="line">01 65 FF</div></pre></td></tr></table></figure></p>
+<ol>
+<li>首先读取sorted set的大小：<strong>04</strong> = 4 （十进制）</li>
+<li>然后，读取第一个成员，使用<a href="#String Encoding">String Encoding</a>。它的长度<strong>01</strong> = 1 （十进制）。读取一个byte：<strong>63</strong> = c （十进制）</li>
+<li>然后读取下一个byte：<strong>12</strong> = 18 （十进制）。这是接下来score使用ASCII编码的字符串长度。</li>
+<li>读取18个bytes，ASCII值：<strong>4.0199999999999996</strong>。如果需要，可以将其转换为double值。</li>
+<li>读取一个byte：<strong>01</strong> = 1， 即下一个成员的长度。读取一个byte：<strong>64</strong> = d（ASCII）。</li>
+<li>读取一个byte：<strong>FE</strong> = 254（十进制）。这表示该分值为正无穷大。</li>
+<li>读取一个byte：<strong>01</strong> = 1， 即下一个成员的长度。读取一个byte：<strong>61</strong> = a（ASCII）。</li>
+<li>读取一个byte：<strong>12</strong> = 18 （十进制）。读取18个byte，将它们转换成ASCII码：<strong>3.1899999999999999</strong>。</li>
+<li>读取一个byte：<strong>01</strong> = 1， 即下一个成员的长度。读取一个byte：<strong>65</strong> = e（ASCII）。</li>
+<li>读取一个byte：<strong>FF</strong> = 255（十进制）。这表示该分值为负无穷小。</li>
+</ol>
+<p>最后sorted set为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;e&quot; =&gt; &quot;-inf&quot;, </div><div class="line">  &quot;a&quot; =&gt; &quot;3.189999999999999&quot;, </div><div class="line">  &quot;c&quot; =&gt; &quot;4.0199999999999996&quot;, </div><div class="line">  &quot;d&quot; =&gt; &quot;+inf&quot; </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Redis/">Redis</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Redis/">Redis</a><a href="/tags/Manual/">Manual</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2017/01/11/program/maven/Maven_Debug_20170111/"  title="Maven项目遇到的BUG汇总">
+ <strong>下一篇：</strong><br/> 
+ <span>Maven项目遇到的BUG汇总
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2017/01/17/redis/Redis_RDB_File_Format_20170117/" data-title="Redis持久化文件RDB的格式解析" data-url="http://www.innereye.cn/2017/01/17/redis/Redis_RDB_File_Format_20170117/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-RDB文件格式"><span class="toc-number">1.</span> <span class="toc-text">Redis RDB文件格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解析RBD文件的高级算法"><span class="toc-number">2.</span> <span class="toc-text">解析RBD文件的高级算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件魔数-Magic-Number"><span class="toc-number">3.</span> <span class="toc-text">文件魔数 Magic Number</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB版本号"><span class="toc-number">4.</span> <span class="toc-text">RDB版本号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#操作码"><span class="toc-number">5.</span> <span class="toc-text">操作码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库选择器"><span class="toc-number">6.</span> <span class="toc-text">数据库选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resizedb信息"><span class="toc-number">7.</span> <span class="toc-text">Resizedb信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助字段"><span class="toc-number">8.</span> <span class="toc-text">辅助字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KV键值对"><span class="toc-number">9.</span> <span class="toc-text">KV键值对</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#失效时间戳"><span class="toc-number">9.1.</span> <span class="toc-text">失效时间戳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值类型"><span class="toc-number">9.2.</span> <span class="toc-text">值类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#键-Key"><span class="toc-number">9.3.</span> <span class="toc-text">键-Key</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值-Value"><span class="toc-number">9.4.</span> <span class="toc-text">值-Value</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码"><span class="toc-number">10.</span> <span class="toc-text">编码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#长度编码"><span class="toc-number">10.1.</span> <span class="toc-text">长度编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String-Encoding"><span class="toc-number">10.2.</span> <span class="toc-text">String Encoding</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Length-Prefixed-String"><span class="toc-number">10.2.1.</span> <span class="toc-text">Length Prefixed String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Integer-As-String"><span class="toc-number">10.2.2.</span> <span class="toc-text">Integer As String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Compressed-Strings"><span class="toc-number">10.2.3.</span> <span class="toc-text">Compressed Strings</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#List-Encoding"><span class="toc-number">10.3.</span> <span class="toc-text">List Encoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Set-Encoding"><span class="toc-number">10.4.</span> <span class="toc-text">Set Encoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Sorted-Set-Encoding"><span class="toc-number">10.5.</span> <span class="toc-text">Sorted Set Encoding</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

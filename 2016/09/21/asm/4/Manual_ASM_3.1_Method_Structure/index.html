@@ -1,0 +1,822 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>3.1 ASM-方法-结构 | BaiFan</title>
+    <meta name="description" id="description" content="3.1 ASM-方法-结构 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="ASM-方法-结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.1 ASM-方法-结构">
+<meta property="og:url" content="http://www.innereye.cn/2016/09/21/asm/4/Manual_ASM_3.1_Method_Structure/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="ASM-方法-结构">
+<meta property="og:image" content="http://www.innereye.cn/img/program/asm/ASM-3.1.1-32-3.1.png">
+<meta property="og:image" content="http://www.innereye.cn/img/program/asm/ASM-3.1.3-36-3.2.png">
+<meta property="og:image" content="http://www.innereye.cn/img/program/asm/ASM-3.1.3-37-3.3.png">
+<meta property="og:updated_time" content="2016-09-29T14:41:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="3.1 ASM-方法-结构">
+<meta name="twitter:description" content="ASM-方法-结构">
+<meta name="twitter:image" content="http://www.innereye.cn/img/program/asm/ASM-3.1.1-32-3.1.png">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/21/asm/4/Manual_ASM_3.1_Method_Structure/" title="3.1 ASM-方法-结构" itemprop="url">3.1 ASM-方法-结构</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2016-09-21T15:05:04.000Z" itemprop="datePublished"> 发表于 2016-09-21</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-结构"><span class="toc-number">1.</span> <span class="toc-text">3.1 结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-字节码指令集"><span class="toc-number">1.1.</span> <span class="toc-text">3.1.2 字节码指令集</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Stack：栈"><span class="toc-number">1.1.1.</span> <span class="toc-text">Stack：栈</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Constants：常量"><span class="toc-number">1.1.2.</span> <span class="toc-text">Constants：常量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Arithmetic-and-logic：算术和逻辑"><span class="toc-number">1.1.3.</span> <span class="toc-text">Arithmetic and logic：算术和逻辑</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Casts：类型转换"><span class="toc-number">1.1.4.</span> <span class="toc-text">Casts：类型转换</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Objects：对象"><span class="toc-number">1.1.5.</span> <span class="toc-text">Objects：对象</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Fields：属性"><span class="toc-number">1.1.6.</span> <span class="toc-text">Fields：属性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Methods：方法"><span class="toc-number">1.1.7.</span> <span class="toc-text">Methods：方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Arrays：数组"><span class="toc-number">1.1.8.</span> <span class="toc-text">Arrays：数组</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Jumps：跳转"><span class="toc-number">1.1.9.</span> <span class="toc-text">Jumps：跳转</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Return：返回"><span class="toc-number">1.1.10.</span> <span class="toc-text">Return：返回</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-示例"><span class="toc-number">1.2.</span> <span class="toc-text">3.1.3 示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-4-异常处理器-Exception-Handlers"><span class="toc-number">1.3.</span> <span class="toc-text">3.1.4. 异常处理器 Exception Handlers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-5-帧-Frames"><span class="toc-number">1.4.</span> <span class="toc-text">3.1.5. 帧 Frames</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>ASM-方法-结构<br><a id="more"></a><br>本章将会介绍如果使用<strong>ASM core API</strong>生成或者转换Java编译后的method。<br>本将开始会展示编译后的method，然后使用很多说明示例，展示相应的ASM接口、组件和工具类，生成或者转换编译后的method。</p>
+<h3 id="3-1-结构"><a href="#3-1-结构" class="headerlink" title="3.1 结构"></a>3.1 结构</h3><p>编译类中的方法代码会存储成一系列的字节码指令集。<br>为了生成和转换class，需要知道这些指令集的基础原理，并且了解它们是如何工作的。<br>本节会给出这些指令的概述，足够生成和转换一些简单的class。<br>如果需要完整的指令集介绍，可以阅读Java虚拟机规范。<a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.11" target="_blank" rel="external">JVM 8 指令集</a></p>
+<p>在介绍字节码指令集前，有必要介绍一下Java虚拟机执行模型。<br>众所周知，Java代码在线程中执行。每一个线程有它独立的执行栈，由栈帧组成。<br>每个栈帧都代表一个方法的调用：每次方法被调用，都会在当前的线程执行栈中压入一个新的栈帧。<br>当方法返回时，不论是正常结束还是抛出异常，这个栈帧都会从线程栈中弹出，然后执行线程栈栈顶（在线程执行栈最上面的栈帧）的方法调用。</p>
+<p>每个栈帧包含两部分：局部变量部分和操作数栈部分。<br>本地变量部分包括可以通过索引随机访问的变量。<br>顾名思义，操作数栈是一个由操组字节码指令集时，需要的值所组成的栈。这意味着，这些值只能通过后进先出(LIFO, Last In First Out)的顺序访问。<br>不要将操作数栈和线程执行栈混淆了：每个栈帧在线程执行栈中都要自己的操作数栈。</p>
+<p>本地变量区和操作数栈的大小取决于方法的代码。<br>它们的大小会在编译阶段计算得出，并且和字节码指令集一起存储在编译后的class中。<br>因此，对于一个相同的方法，所有调用所产生的栈帧大小是相同的。<br>但不同方法所对应栈帧中的本地变量区和操作数栈大小，可能是不同的。</p>
+<p><img src="/img/program/asm/ASM-3.1.1-32-3.1.png" alt="图表 3.1 ：三个栈帧"></p>
+<p>图表 3.1展示了一个由三个栈帧组成的执行栈。<br>第一个栈帧有用3个本地变量，操作数栈最大size是4，但当前只存放了2个值。<br>第二个栈帧有用2个本地变量，操作数栈最大size是3，但当前只存放了2个值。<br>第三个栈帧，在执行栈的栈顶，有用4个本地变量，操作数栈最大size是2，当前存放了2个值。</p>
+<p>当栈帧被创建的时候，和初始化一个空的操作数栈，但本地变量区会存放该对象本身<strong>this</strong>（对于非静态方法）和方法的参数。<br>例如，调用方法<strong>‘a.equals(b)’</strong>会创建一个空的操作数栈，和一个按照<strong>‘a’</strong>、<strong>‘b’</strong>顺序组成的本地变量区（其他本地变量都是未初始化的）。</p>
+<p>每个本地方法区和操作数栈的插槽(slot)都可以容纳任意Java的值，除了<strong>long</strong>和<strong>double</strong>的值。<br><strong>long</strong>和<strong>double</strong>的值需要两个插槽。<br>这就使本地变量区的管理变得复杂了，即：第i个方法参数可能不存储在本地变量区的第i个插槽。<br>例如：调用方法<strong>‘Math.max(1L,2L)’</strong>会创建一个栈帧，本地变量区的第1个和第2个插槽存放<strong>1L</strong>，第3个和第4个插槽存放<strong>2L</strong>。</p>
+<h4 id="3-1-2-字节码指令集"><a href="#3-1-2-字节码指令集" class="headerlink" title="3.1.2 字节码指令集"></a>3.1.2 字节码指令集</h4><p>一个字节码指令是有一个标识该指令的操作码和固定数目的参数组成：</p>
+<ul>
+<li>操作码是一个无符号的byte值，因此字节码的名字，被一个助记符标识。例如，操作码值为0的助记符是<strong>NOP</strong>，对应的指令是什么也不操作。</li>
+<li>参数是定义精确指令行为的静态值。它们会在操作码后给出。比如<strong>GOTO</strong>指令，操作码值是167，使用label作为参数，该参数指定了下一个执行的字节码指令。指令参数不要与指令操作数混淆：参数是静态已知的，存储在编译后的代码中，然而操作数是从操作栈中获取，只有在运行时才能知道。</li>
+</ul>
+<p>字节码指令可以分为两种类型：一小部分指令被设计成从本地变量中传递数据给操作数栈，反之亦然；另一部分指令集仅作用在操作数栈上：从栈中弹出一些值，根据这些值计算出结果，并压入栈中。</p>
+<p><strong>ILOAD</strong>、<strong>LLOAD</strong>、<strong>FLOAD</strong>、<strong>DLOAD</strong>和<strong>ALOAD</strong>指令是读取一个本地变量，并压入到操作数栈。<br>这些指令所使用必须读取的参数索引变量<strong>i</strong>。<br><strong>ILOAD</strong>可以用于读取一个boolean、byte、 char、 short、或者int类型的本地变量。<br><strong>LLOAD</strong>、<strong>FLOAD</strong>和<strong>DLOAD</strong>则分别读取long、float和double类型的值，(<strong>LLOAD</strong>和<strong>DLOAD</strong>实际会读取本地变量的两个插槽：’i’和’i+1’)。<br>最后ALOAD用于加载非原数据类型的值，例如，对象或者数组引用。<br>相应的<strong>ISTORE</strong>、<strong>LSTORE</strong>、<strong>FSTORE</strong>、<strong>DSTORE</strong>和<strong>ASTORE</strong>指令会从操作数栈中弹出一个值，并存放在本地变量指定’i’索引的插槽中。<br>正如所见，<strong><em>x</em>LOAD</strong>和<strong><em>x</em>STORE</strong>都是类型相关的（实际上，接下来也会看到，几乎所有的指令都是类型相关的）。<br>这是用于确保没有非法的转换操作。<br>事实上，存放一个值到本地变量区，用与其不同的类型读取这个变量是非法的。<br>比如，由<strong>‘ISTORE 1’</strong>和<strong>‘ALOAD 1’</strong>组成的执行序列是非法的，如果这样就会允许存储任意一个内存地址到本地变量区，然后将其转变为一个对象引用！<br>然而存放一个值到本地变量区，但该值的类型与当前本地变量区已经存放值的类型是不同，这是完全合法的（请找出语病：然而存放一个不同于当前本地变量区已经存放值的类型的值是完全合法的）。<br>这意味着一个本地变量的类型，即存储在该处的值的类型，可以随着方法的执行变化。</p>
+<p>如上所诉，所有其他字节码都在操作栈上执行。它们被归为以下几类（参照 附录 A.1）</p>
+<h5 id="Stack：栈"><a href="#Stack：栈" class="headerlink" title="Stack：栈"></a>Stack：栈</h5><p>这些指令被使用来对栈中的值进行操作：</p>
+<ul>
+<li><strong>POP</strong>指令会弹出栈顶的值</li>
+<li><strong>DUP</strong>指令会压入栈顶值的拷贝到栈上</li>
+<li><strong>SWAP</strong>指令会弹出栈顶的两个值，按照相反的顺序压入栈中。</li>
+</ul>
+<h5 id="Constants：常量"><a href="#Constants：常量" class="headerlink" title="Constants：常量"></a>Constants：常量</h5><p>这些指令将一个常量压入到操作栈中：</p>
+<ul>
+<li><strong>ACONST_NULL</strong>: 将<strong>null</strong>压入到栈顶中。</li>
+<li><strong>ICONST_0</strong>：将<strong>0</strong>压入到栈中。</li>
+<li><strong>FCONST_0</strong>：将<strong>0f</strong>压入到栈中。</li>
+<li><strong>DCONST_0</strong>：将<strong>0d</strong>压入到栈中。</li>
+<li><strong>BIPUSH b</strong>：将类型为<strong>byte</strong>的值<strong>b</strong>压入到栈中。</li>
+<li><strong>SIPUSH s</strong>：将类型为<strong>short</strong>的值<strong>s</strong>压入到栈中。</li>
+<li><strong>LDC cst</strong>：将任意类型为<strong>int</strong>、<strong>float</strong>、<strong>long</strong>、<strong>double</strong>、<strong>String</strong>或者<strong>class</strong>（此处class对应的是Java语法中对应的<strong>xxx.class</strong>，例如：java.lang.String.class）的常量值cst压入到操作栈。</li>
+</ul>
+<h5 id="Arithmetic-and-logic：算术和逻辑"><a href="#Arithmetic-and-logic：算术和逻辑" class="headerlink" title="Arithmetic and logic：算术和逻辑"></a>Arithmetic and logic：算术和逻辑</h5><p>这些指令从操作栈中取出数值进行运算后，把计算结果再压入栈中。不需要任何参数。</p>
+<ul>
+<li><strong><em>x</em>ADD</strong>、<strong><em>x</em>SUB</strong>、<strong><em>x</em>MUL</strong>、<strong><em>x</em>DIV</strong>和<strong><em>x</em>REM</strong>指令对应了<strong>‘+’</strong>、<strong>‘-‘</strong>、<strong>‘*‘</strong>、<strong>‘/‘</strong>和<strong>‘%’</strong>操作，其中<strong>‘<em>x</em>‘</strong>可以被替换成<strong>‘I’</strong>、<strong>‘L’</strong>、<strong>‘F’</strong>或<strong>‘D’</strong>。与之类似的，还有对于<strong>int</strong>和<strong>long</strong>类型的操作<strong>‘&lt;&lt;’</strong>、<strong>‘&gt;&gt;’</strong>、<strong>‘&gt;&gt;&gt;’</strong>、<strong>‘|’</strong>、<strong>‘&amp;’</strong>和<strong>‘^’</strong>，也有相应的指令。</li>
+</ul>
+<h5 id="Casts：类型转换"><a href="#Casts：类型转换" class="headerlink" title="Casts：类型转换"></a>Casts：类型转换</h5><p>这些指令会将值从栈顶弹出，转换成其他类型后，再将结果压入栈中。这些指令于Java中的转换表达式相对应。例如<strong>I2F</strong>、<strong>F2D</strong>、<strong>L2D</strong>等，将数值型的值，从一个类型转换成另一个类型。<strong>‘CHECKCAST t’</strong>将一个引用值转换成类型t。</p>
+<h5 id="Objects：对象"><a href="#Objects：对象" class="headerlink" title="Objects：对象"></a>Objects：对象</h5><p>这些指令由于创建对象、加锁对象、测试对象的类型等。例如<strong>‘NEW <em>type</em>‘</strong>指令，会创建一个类型为<strong>‘<em>type</em>‘</strong>的对象并压入栈顶（<strong>‘<em>type</em>‘</strong>是类的内部名）。</p>
+<h5 id="Fields：属性"><a href="#Fields：属性" class="headerlink" title="Fields：属性"></a>Fields：属性</h5><p>这些指令用于读写一个field。</p>
+<ul>
+<li><strong>GETFIELD <em>owner name desc</em></strong>会弹出一个对象引用，然后压入该对象名为<strong><em>name</em></strong>的field到栈顶。</li>
+<li><strong>PUTFIELD <em>owner name desc</em></strong>会弹出一个值和一个对象引用，然后将该值存放在该对象名为<strong><em>name</em></strong>的field上。</li>
+</ul>
+<p>在这两个示例中，所有的对象必须是<strong><em>owner</em></strong>类型，field的类型必须是<strong><em>desc</em></strong>。<br><strong>GETSTATIC</strong>和<strong>PUTSTATIC</strong>两个指令和上面的类似，只不过针对的是静态属性。</p>
+<h5 id="Methods：方法"><a href="#Methods：方法" class="headerlink" title="Methods：方法"></a>Methods：方法</h5><p>这些指令会调用一个方法或者一个构造函数。这些指令会弹出和方法参数一样多的值，加一个目标对象的值，然后把方法结果压入操作栈。</p>
+<ul>
+<li><strong>INVOKEVIRTUAL <em>owner name desc</em></strong>会调用在class <strong><em>owner</em></strong>中名为<strong><em>name</em></strong>的方法，该方法的描述符是<strong><em>desc</em></strong>。</li>
+<li><strong>INVOKESTATIC</strong>用于调用静态方法。</li>
+<li><strong>INVOKESPECIAL</strong>用于调用私有方法和构造函数。</li>
+<li><strong>INVOKEINTERFACE</strong>用于接口中定义的方法。</li>
+<li><strong>INVOKEDYNAMIC</strong>是在Java 7中定义的，支持非Java语言，尤其是动态语言，用于新的动态方法调用机制。</li>
+</ul>
+<h5 id="Arrays：数组"><a href="#Arrays：数组" class="headerlink" title="Arrays：数组"></a>Arrays：数组</h5><p>这些指令用于读写数组的值。</p>
+<ul>
+<li><strong><em>x</em>ALOAD</strong>指令会弹出一个索引值<strong>‘index’</strong>和一个数组<strong>‘array’</strong>，然后将数组中索引为<strong>‘index’</strong>的元素压入栈顶。</li>
+<li><strong><em>x</em>ASTORE</strong>指令会弹出一个值、一个索引值<strong>‘index’</strong>和一个数组<strong>‘array’</strong>，然后将该值存储在索引值为<strong>‘index’</strong>的数组<strong>‘array’</strong>中。</li>
+</ul>
+<p>上面两条指令的<strong>‘<em>x</em>‘</strong>可以设置为<strong>‘I’</strong>、<strong>‘L’</strong>、<strong>‘F’</strong>、<strong>‘D’</strong>、<strong>‘A’</strong>、<strong>‘B’</strong>、<strong>‘C’</strong>或<strong>‘S’</strong>。</p>
+<h5 id="Jumps：跳转"><a href="#Jumps：跳转" class="headerlink" title="Jumps：跳转"></a>Jumps：跳转</h5><p>这些指令会在某些条件为<strong>‘true’</strong>的情况下跳转到任意指令，或者无条件的跳转。<br>这些跳转用于<strong>‘if’</strong>、<strong>‘for’</strong>、<strong>‘do’</strong>、<strong>‘while’</strong>、<strong>‘break’</strong>和<strong>‘continue’</strong>操作。<br>例如，<strong>‘IFEQ <em>label</em>‘</strong>，会从栈顶弹出一个<strong>‘int’</strong>值，如果该值为<strong>‘0’</strong>，则会跳转到指令为<strong>‘label’</strong>处；如果该值为其他情况，程序会继续按顺序执行下去。<br>还存在很多其他跳转指令，例如<strong>‘IFNE’</strong>、<strong>‘IFGE’</strong>。<br>最后<strong>‘TABLESWITCH’</strong>和<strong>‘LOOKUPSWITCH’</strong>指令对应Java源码中的<strong>‘switch’</strong>。</p>
+<h5 id="Return：返回"><a href="#Return：返回" class="headerlink" title="Return：返回"></a>Return：返回</h5><p>最后<strong>‘<em>x</em>RETURN’</strong>和<strong>‘RETURN’</strong>使用结束一个方法的执行，并且返回一个结果给该方法的调用者。<br><strong>‘RETURN’</strong>用于返回值为<strong>‘void’</strong>的方法，<strong>‘<em>x</em>RETURN’</strong>则用于其他返回值的方法。</p>
+<h4 id="3-1-3-示例"><a href="#3-1-3-示例" class="headerlink" title="3.1.3 示例"></a>3.1.3 示例</h4><p>介绍一些基本的例子，跟加具体的了解以下字节码指令如何工作。考虑下面的Bean类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> pkg;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bean</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> f;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getF</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.f;</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setF</span><span class="params">(<span class="keyword">int</span> f)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.f = f;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>‘getter’</strong>方法的字节码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ALOAD 0</div><div class="line">GETFIELD pkg/Bean f I</div><div class="line">IRETURN</div></pre></td></tr></table></figure></p>
+<p>第一个指令读取本地变量中索引为0的值，当方法执行帧创建的初始化后，会将<strong>this</strong>压入栈顶。<br>第二个指令从栈中弹出<strong>this</strong>该值，并将该对象的属性<strong>f</strong>（即<strong>this.f</strong>）压入到栈顶。<br>最后一个指令，将栈顶的值<strong>this.f</strong>弹出，并返回给调用者。该方法执行的连续执行帧情况如下面表格3.2所示。</p>
+<p><img src="/img/program/asm/ASM-3.1.3-36-3.2.png" alt="图表 3.2 ：getF方法的连续执行栈帧状态"></p>
+<p><strong>‘setter’</strong>方法的字节码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ALOAD 0</div><div class="line">ILOAD 1</div><div class="line">PUTFIELD pkg/Bean f I</div><div class="line">RETURN</div></pre></td></tr></table></figure></p>
+<p>如上面一样，第一个指令将<strong>this</strong>压入到栈顶。<br>第二个指令将本地变量索引1的值压入栈顶，在该方法执行帧初始化的时候，参数<strong>‘f’</strong>存放在该本地变量处。<br>第三个指令弹出栈顶的两个值，并且将int型的值存放在该对象的属性<strong>f</strong>上，即<strong>this.f</strong>。<br>最后一个指令，在代码中是隐式的，但在编译后的类中是强制的，作用是销毁当前的执行帧并且返回结果给调用方。<br>该方法的连续执行帧如下图表3.3所示。</p>
+<p><img src="/img/program/asm/ASM-3.1.3-37-3.3.png" alt="图表 3.3 ：setF方法的连续执行栈帧状态"></p>
+<p><strong>Bean</strong>类还有一个默认的构造函数，由于没有在源码中定义任何构造函数，此处由编译器生成。<br>默认生成的构造函数是<strong>‘Bean() { super(); }’</strong>。字节码指令集如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ALOAD 0</div><div class="line">INVOKESPECIAL java/lang/Object &lt;init&gt; ()V</div><div class="line">RETURN</div></pre></td></tr></table></figure></p>
+<p>第一个指令将<strong>this</strong>压入到栈顶。<br>第二个指令将该值从栈顶弹出，并调用<strong>Object</strong>类中定义的<strong><init></init></strong>方法。<br>这对应代码中的<strong>super()</strong>调用，即调用其父类<strong>Object</strong>的构造函数。<br>可以看出，构造函数的命名在源码和编译后字节码中是不同的：在编译后的类中都叫<strong><init></init></strong>，在源码中构造函数的名称都与类名相同。<br>最后一个指令，返回到调用者。<br>现在，让我们看一个稍微复杂点的<strong>setter</strong>方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkAndSetF</span><span class="params">(<span class="keyword">int</span> f)</span></span>&#123;</div><div class="line">  <span class="keyword">if</span>(f&gt;=<span class="number">0</span>)&#123;</div><div class="line">    <span class="keyword">this</span>.f=f;</div><div class="line">  &#125;<span class="keyword">else</span>&#123;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>新<strong>setter</strong>方法编译后的字节码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">  ILOAD 1</div><div class="line">  IFLT label</div><div class="line">  ALOAD 0</div><div class="line">  ILOAD 1</div><div class="line">  PUTFIELD pkg/Bean f I</div><div class="line">  GOTO end</div><div class="line">label:</div><div class="line">  NEW java/lang/IllegalArgumentException</div><div class="line">  DUP</div><div class="line">  INVOKESPECIAL java/lang/IllegalArgumentException &lt;init&gt; ()V</div><div class="line">  ATHROW</div><div class="line">end:</div><div class="line">  RETURN</div></pre></td></tr></table></figure></p>
+<p>第一个指令将本地变量索引是1的值压入操作栈顶，即初始化的方法参数<strong>f</strong>。<br><strong>IFLT</strong>指令会从栈中弹出这个值，并于’0’进行比较。<br>如果它比0小(<strong>‘LT’</strong>)，程序就会跳转到为<strong>‘label’</strong>的标签处执行，否则程序会顺序执行下一个指令。<br>接下来的三条指令和”setF”方法的指令一样。<br><strong>‘GOTO’</strong>指令无条件的跳转到由程序指定的<strong>‘end’</strong>标签处，即<strong>RETURN</strong>指令。<br>在<strong>‘label’</strong>标签和<strong>‘end’</strong>标签之间的指令，创建并抛出了一个异常：<strong>‘NEW’</strong>指令创建了一个异常对象，并把这个对象压入到操作栈。<br><strong>‘DUP’</strong>指令复制一份该值在操作栈上。<br><strong>INVOKESPECIAL</strong>指令弹出栈顶其中一个值，并调用exception的构造函数。<br>最后，<strong>‘ATHROW’</strong>指令弹出栈顶保留的另一个值，并作为异常抛出（因此程序不会继续执行该方法的下一个指令。）。</p>
+<h4 id="3-1-4-异常处理器-Exception-Handlers"><a href="#3-1-4-异常处理器-Exception-Handlers" class="headerlink" title="3.1.4. 异常处理器 Exception Handlers"></a>3.1.4. 异常处理器 Exception Handlers</h4><p>没有字节码指令来捕获异常：相对的，是由一系列异常处理器关联方法的字节码，来指定一个给定的部分如果抛出异常后，必须执行的代码。<br>一个异常处理器类似于一个<strong>‘try’</strong> <strong>‘catch’</strong>代码块：它有一个范围，即一系列指令集对应源码中<strong>‘try’</strong>代码块中的内容，它有一个处理（handler），对应源码中<strong>‘catch’</strong>代码块中的内容。<br>这个范围指定了开始和结束的标签（label），和一个有用开始标签（label）的处理器（handler）。<br>例如，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">(<span class="keyword">long</span> d)</span> </span>&#123;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    Thread.sleep(d);</div><div class="line">  &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译后的指令集如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">TRYCATCHBLOCK try catch catch java/lang/InterruptedException</div><div class="line">try:</div><div class="line">  LLOAD 0</div><div class="line">  INVOKESTATIC java/lang/Thread sleep (J)V</div><div class="line">  RETURN</div><div class="line">catch:</div><div class="line">  INVOKEVIRTUAL java/lang/InterruptedException printStackTrace ()V</div><div class="line">  RETURN</div></pre></td></tr></table></figure></p>
+<p>编译后的指令码中<strong>‘try’</strong>和<strong>‘catch’</strong>标签之间的指令对应源码中<strong>try</strong>的代码块。<br><strong>‘TRYCATCHBLOCK’</strong>指令行，指定了异常处理器，包括在<strong>try</strong>和<strong>cache</strong>标签之间的覆盖范围，和一个处理器的开始标签<strong>‘catch’</strong>，并且指定了处理<strong>InterruptedException</strong>异常以及其子异常。<br>这意味着，如果在<strong>try</strong>和<strong>cache</strong>标签之间任何地方抛出该种异常，方法栈都会被清空，这个异常会压入一个空的执行栈中，程序会从<strong>catch</strong>标签处继续执行。</p>
+<h4 id="3-1-5-帧-Frames"><a href="#3-1-5-帧-Frames" class="headerlink" title="3.1.5. 帧 Frames"></a>3.1.5. 帧 Frames</h4><p>使用Java 6或者更高版本编译的class，除了包含字节码指令集以外，还包含了一组栈哈希帧（a set of stack map frames），用于在Java虚拟机内部加速类验证的速度。<br>一个栈哈希帧给出了方法执行帧在执行过程中某个位置的状态。<br>更确切地说，它给出了在某些特殊的字节码指令执行之前，每一个本地变量槽（slot）和方法操作栈槽（slot）中存放的值所对应的类型。</p>
+<p>例如，参考上一节中的<strong>‘getF’</strong>方法，我们可以定义三个栈哈希帧，表示执行帧的三种状态：在<strong>‘ALOAD’</strong>指令执行前、在<strong>‘GETFIELD’</strong>指令执行前、在<strong>‘IRETURN’</strong>指令执行前.<br>这三个栈哈希帧对应了<em>‘图表3.2’</em>的三种情况，描述如下，第一个方括号中的类型对应本地变量，第二个对应操作栈：</p>
+<table>
+<thead>
+<tr>
+<th>在XXX指令执行前的状态</th>
+<th>指令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[pkg/Bean] []</td>
+<td>ALOAD 0</td>
+</tr>
+<tr>
+<td>[pkg/Bean] [pkg/Bean]</td>
+<td>GETFIELD</td>
+</tr>
+<tr>
+<td>[pkg/Bean] [I]</td>
+<td>IRETURN</td>
+</tr>
+</tbody>
+</table>
+<p>也可以这样描述<strong>‘checkAndSetF’</strong>方法：</p>
+<table>
+<thead>
+<tr>
+<th>在XXX指令执行前的状态</th>
+<th>指令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[pkg/Bean I] []</td>
+<td>ILOAD 1</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] [I]</td>
+<td>IFLT label</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] []</td>
+<td>ALOAD 0</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] [pkg/Bean]</td>
+<td>ILOAD 1</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] [pkg/Bean I]</td>
+<td>PUTFIELD</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] []</td>
+<td>GOTO end</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] []</td>
+<td>label :</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] []</td>
+<td>NEW</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] [Uninitialized(label)]</td>
+<td>DUP</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] [Uninitialized(label) Uninitialized(label)]</td>
+<td>INVOKESPECIAL</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] [java/lang/IllegalArgumentException]</td>
+<td>ATHROW</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] []</td>
+<td>end :</td>
+</tr>
+<tr>
+<td>[pkg/Bean I] []</td>
+<td>RETURN</td>
+</tr>
+</tbody>
+</table>
+<p>这和前面的方法类似，除了<strong>‘Uninitialized(label)’</strong>这种类型。<br>这种特殊的类型仅仅用在栈哈希帧上(stack map frames)，用于指定一个对象已经被分配了内存，但是还没有调用构造函数。<br>该参数指定了创建该对象的指令。<br>对于该类型的值，唯一可能调用的就是构造函。<br>当调用构造函数时，帧中所有该类型出现的地方都会被替换成真正的类型，在这里就是<strong>IllegalArgumentException</strong>。<br>栈哈希帧还可以使用其他三种特殊类型：</p>
+<ul>
+<li><strong>‘UNINITIALIZED_THIS’</strong>：是在构造函数中表示本地变量第’0’个变量的初始类型（因为方法中本地变量的第0个槽中应当存放<strong>‘this’</strong>，但此时本对象尚未初始化，所以使用该特殊类型）。</li>
+<li><strong>‘TOP’</strong>：对应一个未定义的值。</li>
+<li><strong>‘NULL’</strong>：对应null值。</li>
+</ul>
+<p>如上所诉，从Java 6开始，编译后的类中，除了包含字节码外，还包含了一组栈哈希帧。<br>为了节省空间，一个编译的方法不会包含一个指令一帧的情况：实际上它仅包含了由跳转到目标地址、异常处理或者无条件跳转指令集组成的帧。<br>事实上，其他帧可以方便、快速地从这些帧上推断出来。</p>
+<p>在<strong>‘checkAndSetF’</strong>方法的中，仅有两种帧存在：一个是<strong>‘NEW’</strong>指令集，因为他是<strong>‘IFLT’</strong>指令的目标，而且还因为它紧跟着无条件跳转指令<strong>‘GOTO’</strong>，另一个是<strong>‘RETURN’</strong>指令，因为它的目标是<strong>‘GOTO’</strong>指令，并且它紧跟着“无条件跳转指令”<strong>‘ATHROW’</strong>。</p>
+<p>为了节省更多的空间，每一帧都仅仅压缩存储于前一帧的不同之处，并且初始帧完全不被存储，因为它很容易从方法参数类型推导出来。<br>在<strong>‘checkAndSetF’</strong>方法中的两帧存储必须相同，并且和初始帧相同，因此它们仅存放为一个字节的<strong>‘F_SAME’</strong>助记符。<br>这些帧仅可以在它们关联的字节码指令前展现。下面给出了<strong>‘checkAndSetF’</strong>最终的字节码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">  ILOAD 1</div><div class="line">  IFLT label</div><div class="line">  ALOAD 0</div><div class="line">  ILOAD 1</div><div class="line">  PUTFIELD pkg/Bean f I</div><div class="line">  GOTO end</div><div class="line">label:</div><div class="line">F_SAME</div><div class="line">  NEW java/lang/IllegalArgumentException</div><div class="line">  DUP</div><div class="line">  INVOKESPECIAL java/lang/IllegalArgumentException &lt;init&gt; ()V</div><div class="line">  ATHROW</div><div class="line">end:</div><div class="line">F_SAME</div><div class="line">  RETURN</div></pre></td></tr></table></figure></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Program/">Program</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Manual/">Manual</a><a href="/tags/ASM/">ASM</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/09/26/asm/4/Manual_ASM_3.2_Method_Interfaces_And_Components/" title="3.2 ASM-方法-接口和组件">
+  <strong>上一篇：</strong><br/>
+  <span>
+  3.2 ASM-方法-接口和组件</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/09/18/asm/4/Manual_ASM_2.3_Classes_Tools/"  title="2.3 ASM-类-工具类">
+ <strong>下一篇：</strong><br/> 
+ <span>2.3 ASM-类-工具类
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/09/21/asm/4/Manual_ASM_3.1_Method_Structure/" data-title="3.1 ASM-方法-结构" data-url="http://www.innereye.cn/2016/09/21/asm/4/Manual_ASM_3.1_Method_Structure/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-结构"><span class="toc-number">1.</span> <span class="toc-text">3.1 结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-字节码指令集"><span class="toc-number">1.1.</span> <span class="toc-text">3.1.2 字节码指令集</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Stack：栈"><span class="toc-number">1.1.1.</span> <span class="toc-text">Stack：栈</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Constants：常量"><span class="toc-number">1.1.2.</span> <span class="toc-text">Constants：常量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Arithmetic-and-logic：算术和逻辑"><span class="toc-number">1.1.3.</span> <span class="toc-text">Arithmetic and logic：算术和逻辑</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Casts：类型转换"><span class="toc-number">1.1.4.</span> <span class="toc-text">Casts：类型转换</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Objects：对象"><span class="toc-number">1.1.5.</span> <span class="toc-text">Objects：对象</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Fields：属性"><span class="toc-number">1.1.6.</span> <span class="toc-text">Fields：属性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Methods：方法"><span class="toc-number">1.1.7.</span> <span class="toc-text">Methods：方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Arrays：数组"><span class="toc-number">1.1.8.</span> <span class="toc-text">Arrays：数组</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Jumps：跳转"><span class="toc-number">1.1.9.</span> <span class="toc-text">Jumps：跳转</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Return：返回"><span class="toc-number">1.1.10.</span> <span class="toc-text">Return：返回</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-示例"><span class="toc-number">1.2.</span> <span class="toc-text">3.1.3 示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-4-异常处理器-Exception-Handlers"><span class="toc-number">1.3.</span> <span class="toc-text">3.1.4. 异常处理器 Exception Handlers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-5-帧-Frames"><span class="toc-number">1.4.</span> <span class="toc-text">3.1.5. 帧 Frames</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>

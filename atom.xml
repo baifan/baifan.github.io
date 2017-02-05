@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>BaiFan</title>
+  <subtitle>Make it work, Make it right, Make it fast.</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://www.innereye.cn/"/>
+  <updated>2017-02-05T14:15:42.046Z</updated>
+  <id>http://www.innereye.cn/</id>
+  
+  <author>
+    <name>BaiFan</name>
+    <email>wsysisibeibei@gmail.com</email>
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis持久化文件RDB的格式解析</title>
+    <link href="http://www.innereye.cn/2017/01/17/redis/Redis_RDB_File_Format_20170117/"/>
+    <id>http://www.innereye.cn/2017/01/17/redis/Redis_RDB_File_Format_20170117/</id>
+    <published>2017-01-17T14:04:55.000Z</published>
+    <updated>2017-02-05T14:15:42.046Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Redis RDB file format.&lt;br&gt;介绍第7版的RDB&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Redis" scheme="http://www.innereye.cn/categories/Redis/"/>
+    
+    
+      <category term="Redis" scheme="http://www.innereye.cn/tags/Redis/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Maven项目遇到的BUG汇总</title>
+    <link href="http://www.innereye.cn/2017/01/11/program/maven/Maven_Debug_20170111/"/>
+    <id>http://www.innereye.cn/2017/01/11/program/maven/Maven_Debug_20170111/</id>
+    <published>2017-01-11T14:29:57.000Z</published>
+    <updated>2017-01-17T14:03:07.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Maven使用的过程中，可能会遇到各种各样的问题。&lt;br&gt;下面介绍项目中遇到的两个BUG.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Tool" scheme="http://www.innereye.cn/categories/Tool/"/>
+    
+    
+      <category term="Debug" scheme="http://www.innereye.cn/tags/Debug/"/>
+    
+      <category term="Maven" scheme="http://www.innereye.cn/tags/Maven/"/>
+    
+      <category term="Sonar" scheme="http://www.innereye.cn/tags/Sonar/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Javac命令使用ct.sym文件约束可使用的类</title>
+    <link href="http://www.innereye.cn/2016/12/28/program/java/Javac_use_ct.sym_file_to_compile-20161228/"/>
+    <id>http://www.innereye.cn/2016/12/28/program/java/Javac_use_ct.sym_file_to_compile-20161228/</id>
+    <published>2016-12-28T14:03:32.000Z</published>
+    <updated>2016-12-29T02:42:12.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在JDK6，升级为JDK7或者JDK8的过程中会遇到一些奇怪的问题，简单的介绍一下经典的&lt;strong&gt;ClassNotFound&lt;/strong&gt;：&lt;strong&gt;sun.nio.*&lt;/strong&gt;、&lt;strong&gt;com.sun.image.codec.jpeg.*&lt;/strong&gt;等。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Debug" scheme="http://www.innereye.cn/tags/Debug/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="Update" scheme="http://www.innereye.cn/tags/Update/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《ASM 4 指南》中文版 -- 前3章</title>
+    <link href="http://www.innereye.cn/2016/09/30/asm/4/Manual_ASM/"/>
+    <id>http://www.innereye.cn/2016/09/30/asm/4/Manual_ASM/</id>
+    <published>2016-09-29T16:57:00.000Z</published>
+    <updated>2016-09-29T17:21:08.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM全书地址目录。&lt;br&gt;只完成了前三章，10月会陆续完成剩下的章节。&lt;br&gt;英文原版：&lt;a href=&quot;http://download.forge.objectweb.org/asm/asm4-guide.pdf&quot;&gt;下载地址&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3.3 ASM-方法-工具类</title>
+    <link href="http://www.innereye.cn/2016/09/28/asm/4/Manual_ASM_3.3_Method_Tools/"/>
+    <id>http://www.innereye.cn/2016/09/28/asm/4/Manual_ASM_3.3_Method_Tools/</id>
+    <published>2016-09-28T14:17:32.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM-方法-工具类&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3.2 ASM-方法-接口和组件</title>
+    <link href="http://www.innereye.cn/2016/09/26/asm/4/Manual_ASM_3.2_Method_Interfaces_And_Components/"/>
+    <id>http://www.innereye.cn/2016/09/26/asm/4/Manual_ASM_3.2_Method_Interfaces_And_Components/</id>
+    <published>2016-09-26T13:25:13.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM-方法-接口和组件&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>3.1 ASM-方法-结构</title>
+    <link href="http://www.innereye.cn/2016/09/21/asm/4/Manual_ASM_3.1_Method_Structure/"/>
+    <id>http://www.innereye.cn/2016/09/21/asm/4/Manual_ASM_3.1_Method_Structure/</id>
+    <published>2016-09-21T15:05:04.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM-方法-结构&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2.3 ASM-类-工具类</title>
+    <link href="http://www.innereye.cn/2016/09/18/asm/4/Manual_ASM_2.3_Classes_Tools/"/>
+    <id>http://www.innereye.cn/2016/09/18/asm/4/Manual_ASM_2.3_Classes_Tools/</id>
+    <published>2016-09-18T05:40:36.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM-类-接口和组件&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2.2 ASM-类-接口和组件</title>
+    <link href="http://www.innereye.cn/2016/09/15/asm/4/Manual_ASM_2.2_Classes_Interfaces_And_Components/"/>
+    <id>http://www.innereye.cn/2016/09/15/asm/4/Manual_ASM_2.2_Classes_Interfaces_And_Components/</id>
+    <published>2016-09-15T14:09:37.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM-类-接口和组件&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring MVC配置响应静态文件请求</title>
+    <link href="http://www.innereye.cn/2016/09/12/program/spring/Manual_Spring_MVC_Resources_Cache-20160912/"/>
+    <id>http://www.innereye.cn/2016/09/12/program/spring/Manual_Spring_MVC_Resources_Cache-20160912/</id>
+    <published>2016-09-12T11:02:18.000Z</published>
+    <updated>2016-09-12T11:22:53.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在web项目中，如果使用了页面，就会涉及到css/js等组件。下面讲解了如何在SpringMVC项目中，相应css、js、img文件，并启用浏览器缓存等机制。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Spring" scheme="http://www.innereye.cn/tags/Spring/"/>
+    
+      <category term="Static" scheme="http://www.innereye.cn/tags/Static/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2.1 ASM-类-结构</title>
+    <link href="http://www.innereye.cn/2016/09/11/asm/4/Manual_ASM_2.1_Classes_Structure/"/>
+    <id>http://www.innereye.cn/2016/09/11/asm/4/Manual_ASM_2.1_Classes_Structure/</id>
+    <published>2016-09-11T14:11:33.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM-类-结构&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1.3 ASM-简介-结构</title>
+    <link href="http://www.innereye.cn/2016/09/10/asm/4/Manual_ASM_1.3_Introduction_Organization/"/>
+    <id>http://www.innereye.cn/2016/09/10/asm/4/Manual_ASM_1.3_Introduction_Organization/</id>
+    <published>2016-09-10T15:25:52.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM-简介-结构&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1.2 ASM-简介-概览</title>
+    <link href="http://www.innereye.cn/2016/09/04/asm/4/Manual_ASM_1.2_Introduction_Overview/"/>
+    <id>http://www.innereye.cn/2016/09/04/asm/4/Manual_ASM_1.2_Introduction_Overview/</id>
+    <published>2016-09-04T15:25:52.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM的简单介绍-概览。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1.1 ASM-简介-目的</title>
+    <link href="http://www.innereye.cn/2016/09/01/asm/4/Manual_ASM_1.1_Introduction_Motivation/"/>
+    <id>http://www.innereye.cn/2016/09/01/asm/4/Manual_ASM_1.1_Introduction_Motivation/</id>
+    <published>2016-09-01T14:35:32.000Z</published>
+    <updated>2016-09-29T14:41:32.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ASM的简单介绍-目的。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="ASM" scheme="http://www.innereye.cn/tags/ASM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Jetty配置自定义的JSESSIONID信息</title>
+    <link href="http://www.innereye.cn/2016/08/30/jetty/Manual_Jetty_Custom_JSessionId/"/>
+    <id>http://www.innereye.cn/2016/08/30/jetty/Manual_Jetty_Custom_JSessionId/</id>
+    <published>2016-08-30T02:43:05.000Z</published>
+    <updated>2016-08-31T01:28:00.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;自定义Jetty的JSession的配置&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Server" scheme="http://www.innereye.cn/categories/Server/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+      <category term="Jetty" scheme="http://www.innereye.cn/tags/Jetty/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringMVC 异步提交表单数据</title>
+    <link href="http://www.innereye.cn/2016/08/29/program/spring/Manual_Java_Spring_Ajax_upload_file_and_form_data/"/>
+    <id>http://www.innereye.cn/2016/08/29/program/spring/Manual_Java_Spring_Ajax_upload_file_and_form_data/</id>
+    <published>2016-08-29T10:53:27.000Z</published>
+    <updated>2016-08-29T13:43:51.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;使用SpringMVC和JQuery，异步post提交还有文件的表单。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+      <category term="Spring" scheme="http://www.innereye.cn/categories/Program/Spring/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/categories/Program/Spring/Manual/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Spring" scheme="http://www.innereye.cn/tags/Spring/"/>
+    
+      <category term="Upload" scheme="http://www.innereye.cn/tags/Upload/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringMVC 使用Valid注解校验数据</title>
+    <link href="http://www.innereye.cn/2016/08/10/program/spring/Debug_Java_SpringMVC_Valid_20160810/"/>
+    <id>http://www.innereye.cn/2016/08/10/program/spring/Debug_Java_SpringMVC_Valid_20160810/</id>
+    <published>2016-08-10T13:02:40.000Z</published>
+    <updated>2016-08-29T02:41:48.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Spring 配置使用@Valid注解&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Program" scheme="http://www.innereye.cn/categories/Program/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Debug" scheme="http://www.innereye.cn/tags/Debug/"/>
+    
+      <category term="Spring" scheme="http://www.innereye.cn/tags/Spring/"/>
+    
+      <category term="Valid" scheme="http://www.innereye.cn/tags/Valid/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL编程规范</title>
+    <link href="http://www.innereye.cn/2016/07/21/mysql/MySQL_Program_Specication_20160721/"/>
+    <id>http://www.innereye.cn/2016/07/21/mysql/MySQL_Program_Specication_20160721/</id>
+    <published>2016-07-21T06:25:37.000Z</published>
+    <updated>2016-08-29T02:41:48.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;MySQL的开发规范&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Database" scheme="http://www.innereye.cn/categories/Database/"/>
+    
+    
+      <category term="MySQL" scheme="http://www.innereye.cn/tags/MySQL/"/>
+    
+      <category term="Quality" scheme="http://www.innereye.cn/tags/Quality/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Gradle Unable to blame file</title>
+    <link href="http://www.innereye.cn/2016/07/19/program/gradle/Gradle_Debug_Unable-to-blame-file_20160719/"/>
+    <id>http://www.innereye.cn/2016/07/19/program/gradle/Gradle_Debug_Unable-to-blame-file_20160719/</id>
+    <published>2016-07-19T10:46:33.000Z</published>
+    <updated>2016-09-03T13:43:09.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在为新的gradle项目，执行sonarqube时，报出了如题的错误Gradle Unable to blame file。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Tool" scheme="http://www.innereye.cn/categories/Tool/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Debug" scheme="http://www.innereye.cn/tags/Debug/"/>
+    
+      <category term="Gradle" scheme="http://www.innereye.cn/tags/Gradle/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Gradle配置http/https/socks代理</title>
+    <link href="http://www.innereye.cn/2016/07/19/program/gradle/Gradle_Config_Proxy_Http_Https_Socks_20160719/"/>
+    <id>http://www.innereye.cn/2016/07/19/program/gradle/Gradle_Config_Proxy_Http_Https_Socks_20160719/</id>
+    <published>2016-07-19T08:33:17.000Z</published>
+    <updated>2016-09-03T13:43:09.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在国内不配置代理不能活。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Tool" scheme="http://www.innereye.cn/categories/Tool/"/>
+    
+    
+      <category term="Java" scheme="http://www.innereye.cn/tags/Java/"/>
+    
+      <category term="Gradle" scheme="http://www.innereye.cn/tags/Gradle/"/>
+    
+      <category term="Manual" scheme="http://www.innereye.cn/tags/Manual/"/>
+    
+  </entry>
+  
+</feed>

@@ -1,0 +1,763 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Java Code Review 指南 | BaiFan</title>
+    <meta name="description" id="description" content="Java Code Review 指南 | BaiFan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="BaiFan">
+    
+
+    
+    <meta name="description" content="Java代码俯身指南，主要为Java开发人员提供代码复审参考，快捷有效提出修改意见。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Code Review 指南">
+<meta property="og:url" content="http://www.innereye.cn/2015/12/07/quality/Java_Code_Review-20151207/index.html">
+<meta property="og:site_name" content="BaiFan">
+<meta property="og:description" content="Java代码俯身指南，主要为Java开发人员提供代码复审参考，快捷有效提出修改意见。">
+<meta property="og:updated_time" content="2016-08-29T02:41:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Code Review 指南">
+<meta name="twitter:description" content="Java代码俯身指南，主要为Java开发人员提供代码复审参考，快捷有效提出修改意见。">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+
+    <div style="float: left;display: none;">
+    <img src="/img/logo.big.png" alt="BaiFan" title="BaiFan"/>
+    </div>
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="BaiFan" title="BaiFan"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BaiFan">BaiFan</a></h1>
+				<h2 class="blog-motto">Make it work, Make it right, Make it fast.</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home | 首页</a></li>
+					
+						<li><a href="/archives">Archives | 归档</a></li>
+					
+						<li><a href="/categories">Categories | 分类</a></li>
+					
+						<li><a href="/tags">Tags | 标签</a></li>
+					
+						<li><a href="/about">About | 关于我</a></li>
+					
+					<li>
+ 					
+						<form class="search"  accept-charset="utf-8">
+							<label>Search</label>
+							<input type="text" id="search" class="st-default-search-input" maxlength="20"
+								   placeholder="Search"/>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/12/07/quality/Java_Code_Review-20151207/" title="Java Code Review 指南" itemprop="url">Java Code Review 指南</a>
+  </h1>
+  <p class="article-declaration">本文可转载演绎，但需要注明原作者和本文链接。</p>
+  <p class="article-author">By
+       
+		<a href="/about" title="BaiFan" target="_blank" itemprop="author">BaiFan</a>
+		
+    </p>
+  <p class="article-time">
+    <time datetime="2015-12-07T08:17:08.000Z" itemprop="datePublished"> 发表于 2015-12-07</time>
+   </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#原则"><span class="toc-number">2.</span> <span class="toc-text">原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#时间"><span class="toc-number">3.</span> <span class="toc-text">时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#心态"><span class="toc-number">4.</span> <span class="toc-text">心态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#人员"><span class="toc-number">5.</span> <span class="toc-text">人员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-Review"><span class="toc-number">6.</span> <span class="toc-text">Java Review</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通用"><span class="toc-number">6.1.</span> <span class="toc-text">通用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#入参"><span class="toc-number">6.2.</span> <span class="toc-text">入参</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置文件"><span class="toc-number">7.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL-Review"><span class="toc-number">8.</span> <span class="toc-text">SQL Review</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#命名"><span class="toc-number">8.1.</span> <span class="toc-text">命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据类型"><span class="toc-number">8.2.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL语句"><span class="toc-number">8.3.</span> <span class="toc-text">SQL语句</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安全"><span class="toc-number">9.</span> <span class="toc-text">安全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提交"><span class="toc-number">10.</span> <span class="toc-text">提交</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#提交原则"><span class="toc-number">10.1.</span> <span class="toc-text">提交原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提交说明"><span class="toc-number">10.2.</span> <span class="toc-text">提交说明</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>Java代码俯身指南，主要为Java开发人员提供代码复审参考，快捷有效提出修改意见。<br><a id="more"></a></p>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><ul>
+<li><strong>发现代码错误</strong>：一个人写的代码可能会有一些思想和设计盲点，多个人尽早的发现BUG。</li>
+<li><strong>统一代码风格</strong>：统一的代码风格，可以提高代码的可读性和可维护性。</li>
+<li><strong>优化代码结构</strong>：比较复杂的业务处理逻辑，多个人同时思考，可以想出较为优秀的解决方案。</li>
+<li><strong>共同成长</strong>：相互之间分享编码经验，可以共同进步。避免发生类似错误。</li>
+</ul>
+<h2 id="原则"><a href="#原则" class="headerlink" title="原则"></a>原则</h2><ul>
+<li><strong>统一性</strong>：看上去像一个人写的</li>
+<li><strong>可读性</strong>：提供代码的可读性</li>
+<li><strong>可维护性</strong>：降低其他人的维护成本</li>
+</ul>
+<h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>审查的时间点顺序如下</p>
+<ol>
+<li>接口定义完成时，需要进行第一轮审查，此审查最重要。</li>
+<li>数据库初步设计完成，在数据库完成时，需要进行审查。</li>
+<li>接口开发完成，静态语法检测完成，提测之前，需要进行审查。</li>
+</ol>
+<h2 id="心态"><a href="#心态" class="headerlink" title="心态"></a>心态</h2><ol>
+<li><strong>聆听</strong>：先把别人要讲的话听完。可以先记录当前的疑问。</li>
+<li><strong>开放</strong>：有疑问的地方一定要提出，不仅可以完善当前程序的逻辑，也可以完善自己的逻辑。</li>
+<li><strong>公正</strong>：把个人的成果当作团队的成果，把团队的成果也当作个人的成果。对待代码，不要进行人身攻击。</li>
+<li><strong>统一</strong>：当不同的方法都可以实现程序逻辑时，应该以统一性、可读性、可维护性为准则。</li>
+</ol>
+<h2 id="人员"><a href="#人员" class="headerlink" title="人员"></a>人员</h2><p>以下人员必须参与代码审核。</p>
+<ol>
+<li>结对编程的另一个人。</li>
+<li>项目的具体负责人。</li>
+<li>一名有经验的开发人员。</li>
+</ol>
+<p>其他人员可以选择自愿参与。</p>
+<h2 id="Java-Review"><a href="#Java-Review" class="headerlink" title="Java Review"></a>Java Review</h2><h3 id="通用"><a href="#通用" class="headerlink" title="通用"></a>通用</h3><ul>
+<li>代码是否符合需求，是否可以输出正常结果。</li>
+<li>是否有明确错误。</li>
+<li>不要返会null数组/集合。使用Collection.emptyList()等静态方法返回空集合。</li>
+<li>不要有反思维的系统设计。使用大多数人容易理解的逻辑处理问题。如果有通用的算法模型除外。</li>
+<li>不要有明显的性能问题。比如大量的数据库交互、文件交互、RPC接口交互。</li>
+<li><strong>类注释</strong>。描述该类的功能和接口范围。</li>
+<li><strong>方法注释</strong>。所有对外提供的接口，必须进行详细的注解说明，说明返回的数据类型和特殊情况处理。</li>
+<li><strong>方法内部注释</strong>。当一个方法体超过20行时，需要对具体的业务，作说明解释，而不仅仅是实现作解释。</li>
+<li>理解本次更改的功能设计。进行code review的人必须完全理解每一个接口的具体功能。</li>
+<li>理解本次更改的实现细节。理解开发者的实现具体想法。</li>
+<li>不可以大量拷贝代码，又不做细节调整。不需要的代码必须都删除。</li>
+<li>使用<strong>枚举</strong>定义的标识分组，而不是使用int/long定义常量标识。比如订单的所有状态、用户状态等。</li>
+<li>static变量<strong>必须</strong>要携带final修饰符。所有的静态变量为了线程安全必须被final标注。如过允许多线程变更静态变量，应当提供静态方法进行修改。</li>
+<li>在任何情况下都要释放资源，io.close\pool.return\connection.close</li>
+<li><strong>日志</strong>记录。在必要的接口开始和结束位置记录参数日志。日志记录方法详见<a href="/program/2015/11/12/Manual_Java_Logger">Java使用slf4j输出日志</a>。</li>
+<li>避免过度多日志记录。不要记录太多无用的日志。</li>
+<li>对外接口使用可处理的返回码，而不是抛出Exception。</li>
+<li>代码<strong>一定要格式化</strong>。</li>
+<li><strong>不允许</strong>修改原有API接口的参数。</li>
+<li>避免循环引用。</li>
+<li>避免内存泄漏。不需要的类，及时清空自己的属性引用。</li>
+<li>调用第三方的接口和第三方类方法，是否捕获了所有异常。</li>
+<li>对内提供的RPC接口统一使用Response类和RespCode响应码。</li>
+<li>和业务结合的算法，要明确注释清楚。</li>
+<li>每个变量<strong>必须</strong>有实际意义，不可以随便使用 i、j、temp等通用变量（经典的<em>for i</em>遍历可以例外）。</li>
+</ul>
+<h3 id="入参"><a href="#入参" class="headerlink" title="入参"></a>入参</h3><ul>
+<li>对所有的入参进行有效验证。</li>
+<li>对入参的边界值进行校验。</li>
+<li>对入参进行注释。</li>
+</ul>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><ol>
+<li>不准引用<strong>其他所有包</strong>中的属性配置文件（xx.properties)。</li>
+<li>配置文件需要统一放在最终项目启动包中。</li>
+<li>不准引用非本项目的配置文件，包括Spring的Bean声明文件、Log的配置文件等。</li>
+</ol>
+<h2 id="SQL-Review"><a href="#SQL-Review" class="headerlink" title="SQL Review"></a>SQL Review</h2><h3 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h3><ol>
+<li><strong>表名</strong>和<strong>字段名</strong>都必须使用小写，单次之间使用下划线（ <strong>_</strong> ）作分割。如<strong>user_center</strong>、<strong>patient_name</strong>、<strong>area_id</strong></li>
+<li><strong>索引</strong>命名。<ul>
+<li><strong>普通索引</strong>使用<strong>idx_</strong>作为前缀，后面根据索引顺序用下划线（ <strong>_</strong> ）连接各个字段名，字段名使用驼峰格式。如<strong>idx_patientName_areaId</strong>等。</li>
+<li><strong>唯一索引</strong>使用<strong>uni_</strong>作为前缀，后面根据索引顺序用下划线（ <strong>_</strong> ）连接各个字段名，字段名使用驼峰格式。如<strong>uni_patientName_areaId</strong>等。</li>
+</ul>
+</li>
+</ol>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ol>
+<li>表引擎使用<strong>InnoDB</strong>，编码使用<strong>utf8</strong>。特定情况例外，需要与组内讨论和DBA确认。</li>
+<li>每张表<strong>必须</strong>有唯一主键。<strong>建议</strong>使用自增主键。</li>
+<li>每张表<strong>建议</strong>包含创建时间（字段名：gmt_created，类型：datetime)、修改时间（字段名：gmt_modified，类型：datetime)。</li>
+<li>如果是后台用到的数据表，也可以<strong>考虑</strong>加入创建员工（字段名：staff_created，类型：long)，修改员工（字段名：staff_modified，类型：long)</li>
+<li>日期类型（yyyy-MM-dd）使用date类型，日期时间类型（yyyy-MM-dd HH:mm:ss）使用datetime。</li>
+<li>自增主键建议使用bigint(20)。枚举类型除外，可以适当考虑使用int(10)。</li>
+<li>在字段中尽量不要使用tinyint和smallint。</li>
+<li>经常使用的查询组合可以考虑联合索引。</li>
+<li>如果字段包含特殊字符，比如emoji表情等，需使用<strong>utf8mb4</strong>字符集。用户可输出的地方，都应该对此进行印证。</li>
+</ol>
+<h3 id="SQL语句"><a href="#SQL语句" class="headerlink" title="SQL语句"></a>SQL语句</h3><ol>
+<li>所有的查询都<strong>必须</strong>走索引。</li>
+<li>每一条使用join语句<strong>必须</strong>由DBA和主管确认。</li>
+</ol>
+<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><ol>
+<li>代码应确保多线程访问的数据一致性。</li>
+</ol>
+<hr>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="提交原则"><a href="#提交原则" class="headerlink" title="提交原则"></a>提交原则</h3><ul>
+<li><strong>单一提交</strong>：一个commit变更应该以一个功能、一种类型的修改为主。多次提交可以保证每次修改可以正确记录和错误回滚。<ul>
+<li>以下分类最好不要同时提交。<strong>修复BUG</strong>、<strong>新功能</strong>、<strong>修改原接口</strong></li>
+<li>在定义完一系列接口、修复完一个BUG等情况即可提交。</li>
+</ul>
+</li>
+<li><strong>完整性</strong>：一个commit提交后，程序应该仍然可以正常运行。<ul>
+<li><strong>不要</strong>提交过于小且没有完整意义的commit。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="提交说明"><a href="#提交说明" class="headerlink" title="提交说明"></a>提交说明</h3><p>提交的message英石解释两个方面，做了什么和为什么要做。<br>提交标题总结本次提交都做了什么，提交细则详细描述为什么要这么做。</p>
+<p><strong>不推荐</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">修复了一个BUG</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">新增了两个接口</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">修改了两个接口</div></pre></td></tr></table></figure>
+<p><strong>推荐</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1.修复用户密码登录接口BUG。用户登录名，需要大小写敏感。之前未做大小写敏感处理。</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1.新增用户微信第三方登录接口。</div><div class="line">2.用户绑定微信第三方登录。</div><div class="line">支持用户微信第三方登录和绑定。</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1.修改用户注册接口</div><div class="line">用户注册的时候可以传递邀请码。</div></pre></td></tr></table></figure>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Quality/">Quality</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Style/">Style</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+     ralateuid:{"tsina":"1395925565"},hideMore:false}
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+2076153" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/03/29/program/log/Logback_Dynamic-01-Appender/" title="Logback动态配置.01_Appender">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Logback动态配置.01_Appender</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/11/17/program/java/Manual_Java_StringUtils/"  title="Apache StringUtils使用指南">
+ <strong>下一篇：</strong><br/> 
+ <span>Apache StringUtils使用指南
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/12/07/quality/Java_Code_Review-20151207/" data-title="Java Code Review 指南" data-url="http://www.innereye.cn/2015/12/07/quality/Java_Code_Review-20151207/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#原则"><span class="toc-number">2.</span> <span class="toc-text">原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#时间"><span class="toc-number">3.</span> <span class="toc-text">时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#心态"><span class="toc-number">4.</span> <span class="toc-text">心态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#人员"><span class="toc-number">5.</span> <span class="toc-text">人员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-Review"><span class="toc-number">6.</span> <span class="toc-text">Java Review</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通用"><span class="toc-number">6.1.</span> <span class="toc-text">通用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#入参"><span class="toc-number">6.2.</span> <span class="toc-text">入参</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置文件"><span class="toc-number">7.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL-Review"><span class="toc-number">8.</span> <span class="toc-text">SQL Review</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#命名"><span class="toc-number">8.1.</span> <span class="toc-text">命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据类型"><span class="toc-number">8.2.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL语句"><span class="toc-number">8.3.</span> <span class="toc-text">SQL语句</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安全"><span class="toc-number">9.</span> <span class="toc-text">安全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提交"><span class="toc-number">10.</span> <span class="toc-text">提交</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#提交原则"><span class="toc-number">10.1.</span> <span class="toc-text">提交原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提交说明"><span class="toc-number">10.2.</span> <span class="toc-text">提交说明</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="baifan" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Cmd/" title="Cmd">Cmd<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Database/" title="Database">Database<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/Manual/" title="Manual">Manual<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Program/" title="Program">Program<sup>23</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Quality/" title="Quality">Quality<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Redis/" title="Redis">Redis<sup>1</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/Server/" title="Server">Server<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Program/Spring/" title="Spring">Spring<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Tool/" title="Tool">Tool<sup>5</sup></a></li>
+		  
+		
+		  
+		
+		  
+			<li><a href="/categories/业余/" title="业余">业余<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/互联网/" title="互联网">互联网<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/效率/" title="效率">效率<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/管理/" title="管理">管理<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/运营/" title="运营">运营<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>29</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Manual/" title="Manual">Manual<sup>22</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ASM/" title="ASM">ASM<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Debug/" title="Debug">Debug<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Tool/" title="Tool">Tool<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Gradle/" title="Gradle">Gradle<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/团队/" title="团队">团队<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/效率/" title="效率">效率<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/格言/" title="格言">格言<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Log/" title="Log">Log<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sonar/" title="Sonar">Sonar<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Style/" title="Style">Style<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Apache/" title="Apache">Apache<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/English/" title="English">English<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Static/" title="Static">Static<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/趋势/" title="趋势">趋势<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://wsysisibeibei.blog.163.com" target="_blank" title="程序员网站">渔网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark">Jark</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1395925565&verifier=7a6db67f&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m BaiFan in Github. <br/>
+			Sometimes, the perfect one for you is the one you least expect. </p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/sisibeibei" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/baifan" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		<a href="https://www.linkedin.com/in/sisibeibei" target="_blank" class="icon-linkedin" title="linkedin"></a>
+		
+		
+		
+		
+		
+		<a href="mailto:wsysisibeibei@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+				<div class="cc-license">
+          <a href="http://creativecommons.org/licenses/by-nd/4.0" class="cc-opacity" target="_blank">
+            <img src="/img/cc-by-nd.svg" alt="Creative Commons" />
+          </a>
+<!-- Analytics Begin -->
+
+
+
+
+
+<script type="text/javascript">
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(decodeURIComponent("%3Cspan id='cnzz_stat_icon_1256965070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256965070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- Analytics End -->
+        </div>
+    
+
+	<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">HEXO</a> and Theme by <a
+				href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a>
+		© 2017 |
+		UV : <span id="busuanzi_value_site_uv"></span> |
+		PV : <span id="busuanzi_value_site_pv"></span>
+	</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"baifan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+<!-- swiftype_search Begin -->
+
+<script>
+    (function (w, d, t, u, n, s, e) {
+        w['SwiftypeObject'] = n;
+        w[n] = w[n] || function () {
+                    (w[n].q = w[n].q || []).push(arguments);
+                };
+        s = d.createElement(t);
+        e = d.getElementsByTagName(t)[0];
+        s.async = 1;
+        s.src = u;
+        e.parentNode.insertBefore(s, e);
+    })(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+    _st('install', '9GijbT6BWsby7ZU5KL8e', '2.0.0');
+
+</script>
+
+<!-- swiftype_search End -->
+
+  </body>
+</html>
