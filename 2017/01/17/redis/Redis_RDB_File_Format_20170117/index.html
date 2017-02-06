@@ -18,7 +18,7 @@
 <meta property="og:url" content="http://www.innereye.cn/2017/01/17/redis/Redis_RDB_File_Format_20170117/index.html">
 <meta property="og:site_name" content="BaiFan">
 <meta property="og:description" content="Redis RDB file format.介绍第7版的RDB">
-<meta property="og:updated_time" content="2017-02-05T14:15:42.046Z">
+<meta property="og:updated_time" content="2017-02-06T14:50:29.055Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis持久化文件RDB的格式解析">
 <meta name="twitter:description" content="Redis RDB file format.介绍第7版的RDB">
@@ -104,7 +104,7 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-RDB文件格式"><span class="toc-number">1.</span> <span class="toc-text">Redis RDB文件格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解析RBD文件的高级算法"><span class="toc-number">2.</span> <span class="toc-text">解析RBD文件的高级算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件魔数-Magic-Number"><span class="toc-number">3.</span> <span class="toc-text">文件魔数 Magic Number</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB版本号"><span class="toc-number">4.</span> <span class="toc-text">RDB版本号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#操作码"><span class="toc-number">5.</span> <span class="toc-text">操作码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库选择器"><span class="toc-number">6.</span> <span class="toc-text">数据库选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resizedb信息"><span class="toc-number">7.</span> <span class="toc-text">Resizedb信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助字段"><span class="toc-number">8.</span> <span class="toc-text">辅助字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KV键值对"><span class="toc-number">9.</span> <span class="toc-text">KV键值对</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#失效时间戳"><span class="toc-number">9.1.</span> <span class="toc-text">失效时间戳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值类型"><span class="toc-number">9.2.</span> <span class="toc-text">值类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#键-Key"><span class="toc-number">9.3.</span> <span class="toc-text">键-Key</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值-Value"><span class="toc-number">9.4.</span> <span class="toc-text">值-Value</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码"><span class="toc-number">10.</span> <span class="toc-text">编码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#长度编码"><span class="toc-number">10.1.</span> <span class="toc-text">长度编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String-Encoding"><span class="toc-number">10.2.</span> <span class="toc-text">String Encoding</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Length-Prefixed-String"><span class="toc-number">10.2.1.</span> <span class="toc-text">Length Prefixed String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Integer-As-String"><span class="toc-number">10.2.2.</span> <span class="toc-text">Integer As String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Compressed-Strings"><span class="toc-number">10.2.3.</span> <span class="toc-text">Compressed Strings</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#List-Encoding"><span class="toc-number">10.3.</span> <span class="toc-text">List Encoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Set-Encoding"><span class="toc-number">10.4.</span> <span class="toc-text">Set Encoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Sorted-Set-Encoding"><span class="toc-number">10.5.</span> <span class="toc-text">Sorted Set Encoding</span></a></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-RDB文件格式"><span class="toc-number">1.</span> <span class="toc-text">Redis RDB文件格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解析RBD文件的高级算法"><span class="toc-number">2.</span> <span class="toc-text">解析RBD文件的高级算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件魔数-Magic-Number"><span class="toc-number">3.</span> <span class="toc-text">文件魔数 Magic Number</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB版本号"><span class="toc-number">4.</span> <span class="toc-text">RDB版本号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#操作码"><span class="toc-number">5.</span> <span class="toc-text">操作码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库选择器"><span class="toc-number">6.</span> <span class="toc-text">数据库选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resizedb信息"><span class="toc-number">7.</span> <span class="toc-text">Resizedb信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助字段"><span class="toc-number">8.</span> <span class="toc-text">辅助字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KV键值对"><span class="toc-number">9.</span> <span class="toc-text">KV键值对</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#失效时间戳"><span class="toc-number">9.1.</span> <span class="toc-text">失效时间戳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值类型"><span class="toc-number">9.2.</span> <span class="toc-text">值类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#键-Key"><span class="toc-number">9.3.</span> <span class="toc-text">键-Key</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值-Value"><span class="toc-number">9.4.</span> <span class="toc-text">值-Value</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码"><span class="toc-number">10.</span> <span class="toc-text">编码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#长度编码"><span class="toc-number">10.1.</span> <span class="toc-text">长度编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String编码"><span class="toc-number">10.2.</span> <span class="toc-text">String编码</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Length-Prefixed-String"><span class="toc-number">10.2.1.</span> <span class="toc-text">Length Prefixed String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Integer-As-String"><span class="toc-number">10.2.2.</span> <span class="toc-text">Integer As String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Compressed-Strings"><span class="toc-number">10.2.3.</span> <span class="toc-text">Compressed Strings</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#List编码"><span class="toc-number">10.3.</span> <span class="toc-text">List编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Set编码"><span class="toc-number">10.4.</span> <span class="toc-text">Set编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SortedSet编码"><span class="toc-number">10.5.</span> <span class="toc-text">SortedSet编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Hash编码"><span class="toc-number">10.6.</span> <span class="toc-text">Hash编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ZipMap编码"><span class="toc-number">10.7.</span> <span class="toc-text">ZipMap编码</span></a></li></ol></li></ol>
 		
 		</div>
 		
@@ -518,7 +518,7 @@
 <ol>
 <li><strong>Expiry Time</strong>：失效时间戳。这个字段是可选的。</li>
 <li><strong>Value Type</strong>：一个字节的标识符，指明Value的类型。</li>
-<li><strong>Key</strong>：使用Redis的<strong>String Encoding</strong>。参照<a href="#String Encoding">String Encoding</a>部分。</li>
+<li><strong>Key</strong>：使用Redis的<strong>String Encoding</strong>。参照<a href="String编码">String编码</a>部分。</li>
 <li><strong>Value</strong>：编码方式根据<a href="值类型">Value Type</a>字段决定。参照<a href="#编码">编码</a>部分。</li>
 </ol>
 <h4 id="失效时间戳"><a href="#失效时间戳" class="headerlink" title="失效时间戳"></a>失效时间戳</h4><p>该部分由一个字节标识开始，该表示可以是以下两种之一：</p>
@@ -529,19 +529,19 @@
 <p>在导入过程中，如果key失效了，必须被忽略掉，即不加载。</p>
 <h4 id="值类型"><a href="#值类型" class="headerlink" title="值类型"></a>值类型</h4><p>一个字节来表示value使用的编码方式。</p>
 <ul>
-<li><strong>0</strong> = <a href="#String Encoding">String Encoding</a></li>
-<li><strong>1</strong> = <a href="#List Encoding">List Encoding</a></li>
-<li><strong>2</strong> = <a href="#Set Encoding">Set Encoding</a></li>
-<li><strong>3</strong> = <a href="#Sorted Set Encoding">Sorted Set Encoding</a></li>
-<li><strong>4</strong> = <a href="#Hash Encoding">Hash Encoding</a></li>
-<li><strong>9</strong> = <a href="#Zipmap Encoding">Zipmap Encoding</a></li>
-<li><strong>10</strong> = <a href="#Ziplist Encoding">Ziplist Encoding</a></li>
-<li><strong>11</strong> = <a href="#Intset Encoding">Intset Encoding</a></li>
-<li><strong>12</strong> = <a href="#Sorted Set in Ziplist Encoding">Sorted Set in Ziplist Encoding</a></li>
-<li><strong>13</strong> = <a href="#Hashmap in Ziplist Encoding">Hashmap in Ziplist Encoding</a>(RDB版本4引入)</li>
-<li><strong>14</strong> = <a href="#List in Quicklist encoding">List in Quicklist encoding</a> (RDB版本7引入)</li>
+<li><strong>0</strong> = <a href="String编码">String编码</a></li>
+<li><strong>1</strong> = <a href="#List编码">List编码</a></li>
+<li><strong>2</strong> = <a href="#Set编码">Set编码</a></li>
+<li><strong>3</strong> = <a href="#SortedSet编码">SortedSet编码</a></li>
+<li><strong>4</strong> = <a href="#Hash编码">Hash编码</a></li>
+<li><strong>9</strong> = <a href="#ZipMap编码">ZipMap编码</a></li>
+<li><strong>10</strong> = <a href="#ZipList编码">ZipList编码</a></li>
+<li><strong>11</strong> = <a href="#IntSet编码">IntSet编码</a></li>
+<li><strong>12</strong> = <a href="#Sorted Set in ZipList编码">Sorted Set in ZipList编码</a></li>
+<li><strong>13</strong> = <a href="#Hashmap in ZipList编码">Hashmap in ZipList编码</a>(RDB版本4引入)</li>
+<li><strong>14</strong> = <a href="#List in QuickList编码">List in QuickList编码</a> (RDB版本7引入)</li>
 </ul>
-<h4 id="键-Key"><a href="#键-Key" class="headerlink" title="键-Key"></a>键-Key</h4><p>Key被当作一个Redis字符串进行编码。参照<a href="#String Encoding">String Encoding</a>部分，了解key是如何编码的。</p>
+<h4 id="键-Key"><a href="#键-Key" class="headerlink" title="键-Key"></a>键-Key</h4><p>Key被当作一个Redis字符串进行编码。参照<a href="String编码">String编码</a>部分，了解key是如何编码的。</p>
 <h4 id="值-Value"><a href="#值-Value" class="headerlink" title="值-Value"></a>值-Value</h4><p>值的编码方式根据<a href="值类型">Value Type</a>字段决定。参照<a href="#编码">编码</a>部分。</p>
 <h3 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h3><h4 id="长度编码"><a href="#长度编码" class="headerlink" title="长度编码"></a>长度编码</h4><p>长度编码用于存放，在流中下一个对象的长度。<br>长度编码是一个变长的字节编码，目的是尽可能的使用少量的字节。<br>长度编码的工作原理：从流中读取一个字节，比较两个最高有效比特（bit）位：</p>
 <table>
@@ -566,7 +566,7 @@
 </tr>
 <tr>
 <td>11</td>
-<td>接下来读取的对象使用了特殊编码。该字节剩余的6个bit表示编码格式。可能存放整数型或者字符串，参照<a href="#String Encoding">String Encoding</a>。</td>
+<td>接下来读取的对象使用了特殊编码。该字节剩余的6个bit表示编码格式。可能存放整数型或者字符串，参照<a href="String编码">String编码</a>。</td>
 </tr>
 </tbody>
 </table>
@@ -576,7 +576,7 @@
 <li>整数64-16383（2^14-1）可以存放在2个字节中。</li>
 <li>整数16383-(2^32-1）可以存放在4个字节中。</li>
 </ul>
-<h4 id="String-Encoding"><a href="#String-Encoding" class="headerlink" title="String Encoding"></a>String Encoding</h4><p>Redis字符串是二进制安全-这意味着你可以存放任意数据。<br>字符串没有任何的特殊字符串作为结尾标记。<br>最好将Redis的字符串看作一个字节数组。</p>
+<h4 id="String编码"><a href="#String编码" class="headerlink" title="String编码"></a>String编码</h4><p>Redis字符串是二进制安全-这意味着你可以存放任意数据。<br>字符串没有任何的特殊字符串作为结尾标记。<br>最好将Redis的字符串看作一个字节数组。</p>
 <p>Redis有三种String类型：</p>
 <ul>
 <li><a href="#Length Prefixed String">长度作为前缀的字符串（Length Prefixed String）</a>。</li>
@@ -598,17 +598,17 @@
 <li>从数据流中读取接下来<strong>clen</strong>长的byte。</li>
 <li>最后，这些byte使用LZF算法解压缩。</li>
 </ul>
-<h4 id="List-Encoding"><a href="#List-Encoding" class="headerlink" title="List Encoding"></a>List Encoding</h4><p>一个Redis的List使用一系列字符串表示。</p>
+<h4 id="List编码"><a href="#List编码" class="headerlink" title="List编码"></a>List编码</h4><p>一个Redis的List使用一系列字符串表示。</p>
 <ul>
 <li>首先，列表的大小<strong>size</strong>，使用<a href="#长度编码">长度编码</a>从数据流中读取。</li>
-<li>接着，<strong>size</strong>个字符串使用<a href="#String Encoding">String Encoding</a>方式读取。</li>
+<li>接着，<strong>size</strong>个字符串使用<a href="String编码">String编码</a>方式读取。</li>
 <li>然后这个列表使用这些字符串重新创建。</li>
 </ul>
-<h4 id="Set-Encoding"><a href="#Set-Encoding" class="headerlink" title="Set Encoding"></a>Set Encoding</h4><p>set的编码方式和<a href="#List Encoding">list</a>一模一样。</p>
-<h4 id="Sorted-Set-Encoding"><a href="#Sorted-Set-Encoding" class="headerlink" title="Sorted Set Encoding"></a>Sorted Set Encoding</h4><ol>
+<h4 id="Set编码"><a href="#Set编码" class="headerlink" title="Set编码"></a>Set编码</h4><p>set的编码方式和<a href="#List编码">list</a>一模一样。</p>
+<h4 id="SortedSet编码"><a href="#SortedSet编码" class="headerlink" title="SortedSet编码"></a>SortedSet编码</h4><ol>
 <li>首先，使用<a href="#长度编码">长度编码</a>从数据流中读取Sorted Set的大小<strong>size</strong>。</li>
 <li>然后，从数据流中读取<strong>size</strong>个值（value）、分数（score）组。</li>
-<li>值使用<a href="#String Encoding">String Encoding</a>。</li>
+<li>值使用<a href="#String编码">String编码</a>。</li>
 <li>下一个byte执行压缩后分数(score)的长度（一个无符号整数）。这个byte有3个值具备特殊含义。<ul>
 <li><strong>253</strong>：不是一个整数，不需要读取额外的byte。</li>
 <li><strong>254</strong>：正无穷大，不需要读取额外的byte。</li>
@@ -624,7 +624,7 @@
 <p>示例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">04</div><div class="line">01 63 12 34 2E 30 31 39 39 39 39 39 39 39 39 39 39 39 39 39 36</div><div class="line">01 64 FE</div><div class="line">01 61 12 33 2E 31 38 39 39 39 39 39 39 39 39 39 39 39 39 39 39</div><div class="line">01 65 FF</div></pre></td></tr></table></figure></p>
 <ol>
 <li>首先读取sorted set的大小：<strong>04</strong> = 4 （十进制）</li>
-<li>然后，读取第一个成员，使用<a href="#String Encoding">String Encoding</a>。它的长度<strong>01</strong> = 1 （十进制）。读取一个byte：<strong>63</strong> = c （十进制）</li>
+<li>然后，读取第一个成员，使用<a href="String编码">String编码</a>。它的长度<strong>01</strong> = 1 （十进制）。读取一个byte：<strong>63</strong> = c （十进制）</li>
 <li>然后读取下一个byte：<strong>12</strong> = 18 （十进制）。这是接下来score使用ASCII编码的字符串长度。</li>
 <li>读取18个bytes，ASCII值：<strong>4.0199999999999996</strong>。如果需要，可以将其转换为double值。</li>
 <li>读取一个byte：<strong>01</strong> = 1， 即下一个成员的长度。读取一个byte：<strong>64</strong> = d（ASCII）。</li>
@@ -635,6 +635,39 @@
 <li>读取一个byte：<strong>FF</strong> = 255（十进制）。这表示该分值为负无穷小。</li>
 </ol>
 <p>最后sorted set为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;e&quot; =&gt; &quot;-inf&quot;, </div><div class="line">  &quot;a&quot; =&gt; &quot;3.189999999999999&quot;, </div><div class="line">  &quot;c&quot; =&gt; &quot;4.0199999999999996&quot;, </div><div class="line">  &quot;d&quot; =&gt; &quot;+inf&quot; </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="Hash编码"><a href="#Hash编码" class="headerlink" title="Hash编码"></a>Hash编码</h4><ol>
+<li>首先，使用<a href="#长度编码">长度编码</a>从数据流中读取Hash的大小<strong>size</strong>。</li>
+<li>然后从流中使用<a href="#String编码">String编码</a>读取<strong>2 * size</strong>个字符串。</li>
+</ol>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2 us washington india delhi</div></pre></td></tr></table></figure>
+<p>表示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;us&quot; =&gt; &quot;washington&quot;, </div><div class="line">  &quot;india&quot; =&gt; &quot;delhi&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="ZipMap编码"><a href="#ZipMap编码" class="headerlink" title="ZipMap编码"></a>ZipMap编码</h4><p>一个ZipMap就是一个HashMap被序列化成的一个字符串。<br>实质上，键值对是被顺序存储的。<br>在该结构中查找一个key的算法时间复杂度是<strong>O(N)</strong>。<br>当键值对的数量较少时，使用该结构而不是字典结构。<br>解析一个ZipMap，首先使用<a href="#String编码">String编码</a>从流中读取一个字符串。这个字符串就表示该ZipMap。</p>
+<p>一个ZipMap使用字符串的表达形式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;zmlen&gt;&lt;len&gt;&quot;foo&quot;&lt;len&gt;&lt;free&gt;&quot;bar&quot;&lt;len&gt;&quot;hello&quot;&lt;len&gt;&lt;free&gt;&quot;world&quot;&lt;zmend&gt;</div></pre></td></tr></table></figure></p>
+<ul>
+<li><strong>zmlen</strong>：一个byte，表示该ZipMap的大小。如果该值大于或者等于254，则表示该值不可用。此时需要迭代整个ZipMap，算出该ZipMap的大小。</li>
+<li><strong>len</strong>：下一个字符串的长度，该字符串可能是key或者是value。这个字符串的长度可能被1个byte或者5个byte表示（和上面<a href="#长度编码">长度编码</a>不同）。如果第一个byte的值是0到252，那么这就是该ZipMap的长度，如果该byte值是253，则接下来的4个byte组成一个无符号整数，表示ZipMap的长度。对于该值254、255是非法的。</li>
+<li><strong>free</strong>：这个字段总占用1个byte，并指明了该值后空闲byte的数量。例如，如果一个key的value是“America”，并且更新为“USA”，就会空闲4个byte。</li>
+<li><strong>zend</strong>：该值总是255，表示ZipMap的结尾。</li>
+</ul>
+<p>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">18 02 06 4D 4B 44 31 47 36 01 00 32 05 59 4E 4E 58 4b 04 00 46 37 54 49 FF ..</div></pre></td></tr></table></figure></p>
+<ul>
+<li>首先使用<a href="#String编码">String编码</a>方式，反解码这个字符串。你会发现该字符串的长度是<strong>0x18</strong>（十进制值是24）。实际上，我们需要读取接下来的24个byte，即一直到<strong>FF</strong>。</li>
+<li>现在，我们使用<a href="#ZipMap编码">ZipMap编码</a>解析该字符串<strong>02 06 …</strong>。</li>
+<li><strong>02</strong>是HashMap的条目数。</li>
+<li><strong>06</strong>是下一个字符串的长度，由于这个值小于254，我们不必读取额外的字节。</li>
+<li>我们读取接下来的6个byte，即<strong>4d 4b 44 31 47 36</strong>，得到key：<strong>MKD1G6</strong>。</li>
+<li><strong>01</strong>是接下来字符串的长度，即value的长度。</li>
+<li><strong>00</strong>表示空闲字符串的个数，即0。</li>
+<li>我们读取接下来的1个byte，即<strong>32</strong>，得到value：<strong>2</strong>。</li>
+<li>在本条记录中，由于空闲字符串个数是0，所以不需要跳过任意byte。</li>
+<li><strong>05</strong>是下一个字符串的长度，即key。</li>
+<li>我们读取接下来的5个byte，即<strong>59 4e 4e 58 4b</strong>，得到key：<strong>YNNXK</strong>。</li>
+<li><strong>04</strong>是接下来字符串的长度，即value的长度。</li>
+<li><strong>00</strong>表示空闲字符串的个数，即0。</li>
+<li>我们读取接下来的4个byte，即<strong>46 37 54 49</strong>，得到value：<strong>F7TI</strong>。</li>
+</ul>
+<p>这样，我们得到ZipMap如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;MKD1G6&quot; =&gt; &quot;2&quot;, </div><div class="line">  &quot;YNNXK&quot; =&gt; &quot;F7TI&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -716,7 +749,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-RDB文件格式"><span class="toc-number">1.</span> <span class="toc-text">Redis RDB文件格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解析RBD文件的高级算法"><span class="toc-number">2.</span> <span class="toc-text">解析RBD文件的高级算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件魔数-Magic-Number"><span class="toc-number">3.</span> <span class="toc-text">文件魔数 Magic Number</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB版本号"><span class="toc-number">4.</span> <span class="toc-text">RDB版本号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#操作码"><span class="toc-number">5.</span> <span class="toc-text">操作码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库选择器"><span class="toc-number">6.</span> <span class="toc-text">数据库选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resizedb信息"><span class="toc-number">7.</span> <span class="toc-text">Resizedb信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助字段"><span class="toc-number">8.</span> <span class="toc-text">辅助字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KV键值对"><span class="toc-number">9.</span> <span class="toc-text">KV键值对</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#失效时间戳"><span class="toc-number">9.1.</span> <span class="toc-text">失效时间戳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值类型"><span class="toc-number">9.2.</span> <span class="toc-text">值类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#键-Key"><span class="toc-number">9.3.</span> <span class="toc-text">键-Key</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值-Value"><span class="toc-number">9.4.</span> <span class="toc-text">值-Value</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码"><span class="toc-number">10.</span> <span class="toc-text">编码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#长度编码"><span class="toc-number">10.1.</span> <span class="toc-text">长度编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String-Encoding"><span class="toc-number">10.2.</span> <span class="toc-text">String Encoding</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Length-Prefixed-String"><span class="toc-number">10.2.1.</span> <span class="toc-text">Length Prefixed String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Integer-As-String"><span class="toc-number">10.2.2.</span> <span class="toc-text">Integer As String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Compressed-Strings"><span class="toc-number">10.2.3.</span> <span class="toc-text">Compressed Strings</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#List-Encoding"><span class="toc-number">10.3.</span> <span class="toc-text">List Encoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Set-Encoding"><span class="toc-number">10.4.</span> <span class="toc-text">Set Encoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Sorted-Set-Encoding"><span class="toc-number">10.5.</span> <span class="toc-text">Sorted Set Encoding</span></a></li></ol></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-RDB文件格式"><span class="toc-number">1.</span> <span class="toc-text">Redis RDB文件格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解析RBD文件的高级算法"><span class="toc-number">2.</span> <span class="toc-text">解析RBD文件的高级算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件魔数-Magic-Number"><span class="toc-number">3.</span> <span class="toc-text">文件魔数 Magic Number</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB版本号"><span class="toc-number">4.</span> <span class="toc-text">RDB版本号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#操作码"><span class="toc-number">5.</span> <span class="toc-text">操作码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库选择器"><span class="toc-number">6.</span> <span class="toc-text">数据库选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resizedb信息"><span class="toc-number">7.</span> <span class="toc-text">Resizedb信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助字段"><span class="toc-number">8.</span> <span class="toc-text">辅助字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KV键值对"><span class="toc-number">9.</span> <span class="toc-text">KV键值对</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#失效时间戳"><span class="toc-number">9.1.</span> <span class="toc-text">失效时间戳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值类型"><span class="toc-number">9.2.</span> <span class="toc-text">值类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#键-Key"><span class="toc-number">9.3.</span> <span class="toc-text">键-Key</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#值-Value"><span class="toc-number">9.4.</span> <span class="toc-text">值-Value</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码"><span class="toc-number">10.</span> <span class="toc-text">编码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#长度编码"><span class="toc-number">10.1.</span> <span class="toc-text">长度编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String编码"><span class="toc-number">10.2.</span> <span class="toc-text">String编码</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Length-Prefixed-String"><span class="toc-number">10.2.1.</span> <span class="toc-text">Length Prefixed String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Integer-As-String"><span class="toc-number">10.2.2.</span> <span class="toc-text">Integer As String</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Compressed-Strings"><span class="toc-number">10.2.3.</span> <span class="toc-text">Compressed Strings</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#List编码"><span class="toc-number">10.3.</span> <span class="toc-text">List编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Set编码"><span class="toc-number">10.4.</span> <span class="toc-text">Set编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SortedSet编码"><span class="toc-number">10.5.</span> <span class="toc-text">SortedSet编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Hash编码"><span class="toc-number">10.6.</span> <span class="toc-text">Hash编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ZipMap编码"><span class="toc-number">10.7.</span> <span class="toc-text">ZipMap编码</span></a></li></ol></li></ol>
  
   </div>
 
